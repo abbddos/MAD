@@ -34,7 +34,7 @@ class Users(db.Model):
         i = 1
         userexists = Users.query.all()
         for name in userexists.UserName:
-            while user == userexists.UserName:
+            while user == name:
                 newname = user + str(i)
                 i += 1
         return newname
