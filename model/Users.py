@@ -5,7 +5,7 @@ class Users(db.Model):
     UserId = db.Column(db.Integer, primary_key = True)
     FirstName = db.Column(db.String(50), nullable = False)
     LastName = db.Column(db.String(50), nullable = False)
-    UserName db.Column(db.String(50), nullable = False)
+    UserName = db.Column(db.String(50), nullable = False)
     Password = db.Column(db.String(500), nullable = False)
     Position = db.Column(db.String(50), nullable = True)
     Department = db.Column(db.String(50), nullable = True)

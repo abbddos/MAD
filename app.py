@@ -1,9 +1,11 @@
+
 from flask import *
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import *
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import json
+
 #from views import login, admin, profile, project
 
 app = Flask(__name__)
@@ -29,13 +31,11 @@ db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
 mail = Mail(app)
 
+from model import Users
 
 @app.route('/')
 def index():
     return "This is a fuckery"
 
-#app.register_blueprint(login.mod)
-#app.register_blueprint(admin.mod)
-#app.register_blueprint(profile.mod)
-#app.register_blueprint(project.mod)
+
 
