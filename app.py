@@ -13,6 +13,7 @@ confs = json.loads(config_json.read())
 
 app.secret_key = confs['SecretKey']
 app.config['SQLALCHEMY_DATABASE_URI'] = confs['Database-URI']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG'] = True
 app.config['TESTING'] = False
 app.config['MAIL_SERVER'] = confs['Mail-server']
