@@ -1,0 +1,7 @@
+{
+    "Database-URI": "postgresql+psycopg2://abdul:abdul*1983@localhost/enterprise_pmg",
+    "Mail-server": "smtp.gmail.com",
+    "Email-Username": "abbddos@gmail.com",
+    "Email-Password": "AbdulRahman*SS1983",
+    "SecretKey": "ididnotrealywantusingthissecretkeyatallbutitisthere"
+}
