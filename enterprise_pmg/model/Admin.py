@@ -31,10 +31,10 @@ class Users(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def GetAllUsers(self):
+    def GetAllUsers():
         return Users.query.all()
 
-    def GetUserByID(self, uid):
+    def GetUserByID(uid):
         return Users.query.filter_by(UserId = uid).first()
         
 
@@ -129,7 +129,7 @@ class CompanyProfile(db.Model):
         self.Registration = reg
         self.Description = desc
 
-    def GetCompanyByID(self, cid):
+    def GetCompanyByID(cid):
         return CompanyProfile.query.filter_by(CompanyID = cid).first()
     
     def UpdateCompanyProfile(name, address, phone1, phone2, email, pobox, reg, desc):
