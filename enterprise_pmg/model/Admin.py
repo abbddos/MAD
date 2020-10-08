@@ -32,10 +32,40 @@ class Users(db.Model):
         db.session.commit()
 
     def GetAllUsers():
-        return Users.query.all()
+        data1 = []
+        qrys = Users.query.all()
+        for qry in qrys:
+            data = dict()
+            data['UserId'] = qry.UserId
+            data['FirstName'] = qry.FirstName
+            data['LastName'] = qry.LastName
+            data['UserName'] = qry.UserName
+            data['Position'] = qry.Position
+            data['Department'] = qry.Department
+            data['Email'] = qry.Email
+            data['Phone'] = qry.Phone
+            data['Role'] = qry.Role
+            data['Status'] = qry.Status
+            data['ProfilePic'] = qry.ProfilePic
+            data1.append(data)
+        return data1
 
     def GetUserByID(uid):
-        return Users.query.filter_by(UserId = uid).first()
+        qry = Users.query.filter_by(UserId = uid).first()
+        data = dict()
+        data['UserId'] = qry.UserId
+        data['FirstName'] = qry.FirstName
+        data['LastName'] = qry.LastName
+        data['UserName'] = qry.UserName
+        data['Position'] = qry.Position
+        data['Department'] = qry.Department
+        data['Email'] = qry.Email
+        data['Phone'] = qry.Phone
+        data['Role'] = qry.Role
+        data['Status'] = qry.Status
+        data['ProfilePic'] = qry.ProfilePic
+
+        return data
         
 
     def createusername(firstname, lastname):
@@ -130,7 +160,18 @@ class CompanyProfile(db.Model):
         self.Description = desc
 
     def GetCompanyByID(cid):
-        return CompanyProfile.query.filter_by(CompanyID = cid).first()
+        data = dict()
+        qry =  CompanyProfile.query.filter_by(CompanyID = cid).first()
+        data['CompanyID'] = qry.CompanyID
+        data['CompanyName'] = qry.CompanyName
+        data['Address'] = qry.Address
+        data['Phone_1'] = qry.Phone_1
+        data['Phone_2'] = qry.Phone_2
+        data['Email'] = qry.Email
+        data['POBox'] = qry.POBox
+        data['Registration'] = qry.Registration
+        data['Description'] = qry.Description
+        return data
     
     def UpdateCompanyProfile(name, address, phone1, phone2, email, pobox, reg, desc):
         cmp = CompanyProfile.query.first()
