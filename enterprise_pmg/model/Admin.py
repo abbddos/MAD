@@ -5,7 +5,7 @@ class Users(db.Model):
     UserId = db.Column(db.Integer, primary_key = True)
     FirstName = db.Column(db.String(50), nullable = False)
     LastName = db.Column(db.String(50), nullable = False)
-    UserName = db.Column(db.String(50), nullable = False)
+    UserName = db.Column(db.String(50), nullable = False, unique = True)
     Password = db.Column(db.String(500), nullable = False)
     Position = db.Column(db.String(50), nullable = True)
     Department = db.Column(db.String(50), nullable = True)
@@ -14,32 +14,42 @@ class Users(db.Model):
     Role = db.Column(db.ARRAY(db.String(50)), nullable = False)
     Status = db.Column(db.String(10), nullable = False)
     ProfilePic = db.Column(db.String(50), nullable = True)
-    db.UniqueConstraint(UserName)
+    
 
     def __init__(self, firstname, lastname, position, department, email, phone, role, status, profilepic):
         self.FirstName = firstname
         self.LastName = lastname
-        self.UserName = createusername(firstname, lastname)
-        self.Password = createpassword(self.UserName)
+        self.UserName = Users.createusername(firstname, lastname)
+        self.Password = Users.createpassword(self.UserName)
         self.Position = position
         self.Department = department
         self.Email = email
         self.Phone = phone
         self.Role = role
-        self.status = Status
+        self.Status = status
         self.ProfilePic = profilepic  
+        db.session.add(self)
+        db.session.commit()
 
-    def createusername(self, firstname, lastname):
+    def GetAllUsers(self):
+        return Users.query.all()
+
+    def GetUserByID(self, uid):
+        return Users.query.filter_by(UserId = uid).first()
+        
+
+    def createusername(firstname, lastname):
         user = firstname[0].lower() + lastname.lower()
+        newname = user
         i = 1
         userexists = Users.query.all()
-        for name in userexists.UserName:
-            while user == name:
+        for name in userexists:
+            while newname == name.UserName:
                 newname = user + str(i)
                 i += 1
         return newname
 
-    def createpassword(self, username):
+    def createpassword(username):
         pswd = username + '@123'
         m = hashlib.sha256()
         m.update(pswd.encode('utf8'))
@@ -98,3 +108,38 @@ class Users(db.Model):
             else:
                 return{'Logged': False}
 
+class CompanyProfile(db.Model):
+    CompanyID = db.Column(db.Integer, primary_key = True)
+    CompanyName = db.Column(db.String(1000))
+    Address = db.Column(db.String(50))
+    Phone_1 =  db.Column(db.String(20))
+    Phone_2 = db.Column(db.String(20))
+    Email = db.Column(db.String(50))
+    POBox = db.Column(db.String(10))
+    Registration = db.Column(db.String(50))
+    Description = db.Column(db.Text) 
+
+    def __init__(self, name, address, phone1, phone2, email, pobox, reg, desc):
+        self.CompanyName = name
+        self.Address = address
+        self.Phone_1 = phone1
+        self.Phone_2 = phone2
+        self.Email = email
+        self.POBox = pobox
+        self.Registration = reg
+        self.Description = desc
+
+    def GetCompanyByID(self, cid):
+        return CompanyProfile.query.filter_by(CompanyID = cid).first()
+    
+    def UpdateCompanyProfile(name, address, phone1, phone2, email, pobox, reg, desc):
+        cmp = CompanyProfile.query.first()
+        cmp.CompanyName = name
+        cmp.Address = address
+        cmp.Phone_1 = phone1
+        cmp.Phone_2 = phone2
+        cmp.Email = email
+        cmp.POBox = pobox
+        cmp.Registration = reg
+        cmp.Description = desc
+        db.session.commit()
