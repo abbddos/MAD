@@ -31,9 +31,10 @@ csrf = CSRFProtect(app)
 mail = Mail(app)
 
 from enterprise_pmg import routes
-#from enterprise_pmg.views import admin, profile, projects
+from enterprise_pmg.views import admin 
+#, profile, projects
 
-#app.register_blueprint(admin.mod)
+app.register_blueprint(admin.mod)
 #app.register_blueprint(profile.mod)
 #app.register_blueprint(projects.mod)
 

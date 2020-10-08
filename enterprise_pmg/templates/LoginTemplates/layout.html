@@ -14,7 +14,7 @@
       <ul>
         <li><a href = "{{url_for('home')}}">Home</a></li>
         {% if  'Admin' in role  or 'root' in role%}
-        <li><a href = "#">Administration</a></li>
+        <li><a href = "{{url_for('admin.admin')}}">Administration</a></li>
         {% endif %}
         {% if 'Logistics' in role or 'Manager' in role or 'root' in role%}
         <li><a href = "#">Projects</a></li>
