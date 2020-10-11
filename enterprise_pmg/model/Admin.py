@@ -20,7 +20,8 @@ class Users(db.Model):
         self.FirstName = firstname
         self.LastName = lastname
         self.UserName = Users.createusername(firstname, lastname)
-        self.Password = Users.createpassword(self.UserName)
+        pswd, hashpass =Users.createpassword(self.UserName)
+        self.Password = hashpass
         self.Position = position
         self.Department = department
         self.Email = email
@@ -32,40 +33,12 @@ class Users(db.Model):
         db.session.commit()
 
     def GetAllUsers():
-        data1 = []
         qrys = Users.query.all()
-        for qry in qrys:
-            data = dict()
-            data['UserId'] = qry.UserId
-            data['FirstName'] = qry.FirstName
-            data['LastName'] = qry.LastName
-            data['UserName'] = qry.UserName
-            data['Position'] = qry.Position
-            data['Department'] = qry.Department
-            data['Email'] = qry.Email
-            data['Phone'] = qry.Phone
-            data['Role'] = qry.Role
-            data['Status'] = qry.Status
-            data['ProfilePic'] = qry.ProfilePic
-            data1.append(data)
-        return data1
+        return qrys
 
     def GetUserByID(uid):
         qry = Users.query.filter_by(UserId = uid).first()
-        data = dict()
-        data['UserId'] = qry.UserId
-        data['FirstName'] = qry.FirstName
-        data['LastName'] = qry.LastName
-        data['UserName'] = qry.UserName
-        data['Position'] = qry.Position
-        data['Department'] = qry.Department
-        data['Email'] = qry.Email
-        data['Phone'] = qry.Phone
-        data['Role'] = qry.Role
-        data['Status'] = qry.Status
-        data['ProfilePic'] = qry.ProfilePic
-
-        return data
+        return qry
         
 
     def createusername(firstname, lastname):
@@ -84,7 +57,7 @@ class Users(db.Model):
         m = hashlib.sha256()
         m.update(pswd.encode('utf8'))
         hashpass = m.hexdigest()
-        return hashpass
+        return pswd, hashpass
 
     def SELECT_ALL():
         return Users.query.all()
@@ -122,6 +95,7 @@ class Users(db.Model):
         db.session.commit()
 
     def LOGGER(username, password):
+        #try:
         if password != 'admin':
             m = hashlib.sha256()
             m.update(password.encode('utf8'))
@@ -137,6 +111,8 @@ class Users(db.Model):
                 return {'username': usr.UserName, 'role': usr.Role, 'Logged': True}
             else:
                 return{'Logged': False}
+        #except:
+        #    return {'Logged': False}
 
 class CompanyProfile(db.Model):
     CompanyID = db.Column(db.Integer, primary_key = True)
@@ -160,18 +136,8 @@ class CompanyProfile(db.Model):
         self.Description = desc
 
     def GetCompanyByID(cid):
-        data = dict()
         qry =  CompanyProfile.query.filter_by(CompanyID = cid).first()
-        data['CompanyID'] = qry.CompanyID
-        data['CompanyName'] = qry.CompanyName
-        data['Address'] = qry.Address
-        data['Phone_1'] = qry.Phone_1
-        data['Phone_2'] = qry.Phone_2
-        data['Email'] = qry.Email
-        data['POBox'] = qry.POBox
-        data['Registration'] = qry.Registration
-        data['Description'] = qry.Description
-        return data
+        return qry
     
     def UpdateCompanyProfile(name, address, phone1, phone2, email, pobox, reg, desc):
         cmp = CompanyProfile.query.first()

@@ -6,7 +6,6 @@ from wtforms.validators import *
 class CreateUser(Form):
     firstname = StringField('First Name: ', validators = [DataRequired()])
     lastname = StringField('Last Name: ', validators = [DataRequired()])
-    company = StringField('Company: ')
     position = StringField('Position: ')
     department = StringField('Department: ')
     email = StringField('Email: ')

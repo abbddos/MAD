@@ -1,0 +1,117 @@
+{% extends 'AdminTemplates/admin.html'%}
+{% from 'renderfield.html' import render_field %}
+{% block adminpage%}
+<div class = 'actionpage'>
+    <button id = 'add-user' class = 'btn-active' style = 'float: left; width: 150px;'>Create New User</button>
+    <input type = 'text' style = 'border: solid rgb(0,0,100); border-width: 1px; border-radius: 3px; margin: 5px; float: left;box-shadow: 1px 1px 2px rgb(200,200,200);' placeholder = 'Search' id = 'srch' />
+    <table>
+        <thead>
+            <tr>
+                <th>User ID:</th>
+                <th>First Name:</th>
+                <th>Last Name:</th>
+                <th>Username:</th>
+                <th>Position:</th>
+                <th>Department:</th>
+                <th>Email:</th>
+                <th>Phone:</th>
+                <th>Role:</th>
+                <th>Status:</th>
+                <th>Edit:</th>
+                <th>Reset Password:</th>
+            </tr>
+        </thead>
+        {% for u in allusers %}
+            <tr class = 'table-row {{u.Status}}'>
+                <td>{{u.UserId}}</td>
+                <td>{{u.FirstName}}</td>
+                <td>{{u.LastName}}</td>
+                <td>{{u.UserName}}</td>
+                <td>{{u.Position}}</td>
+                <td>{{u.Department}}</td>
+                <td>{{u.Email}}</td>
+                <td>{{u.Phone}}</td>
+                <td>{%for r in u.Role%}{{r}}, {% endfor %}</td>
+                <td>{{u.Status}}</td>
+                <td><a href = ""><img src = "{{url_for('static', filename = 'images/edit.png')}}" style = 'height:25px; width: 25px;'/></a></td>
+                <td><a href = ""><img src = "{{url_for('static', filename = 'images/reset_password.png')}}" style = 'height:25px; width: 25px;'/></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class = "{{category}}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+<div id="myModal" class="modal">
+    <div class="modal-content" style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
+        <form method = 'POST' action = "{{url_for('admin.CreateNewUser')}}" style = 'width:100%;'>
+            <h3>Create New User <span class="close">&times;</span></h3>
+            <div class = 'fields'>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              {{ render_field(form_c.firstname) }}
+              {{ render_field(form_c.lastname) }}
+              {{ render_field(form_c.position)}}
+              {{ render_field(form_c.department)}}
+              {{ render_field(form_c.email)}}
+              {{ render_field(form_c.phone1)}}
+              <div class = 'row'>
+                <div class = 'col-a'>
+                  <label>Roles:</label>
+                </div>
+                <div class = 'col-b'>
+                  <table>
+                    <tr>
+                      <th><input type = 'Checkbox' id = 'select_all_roles' />Select All</th>
+                      <th>Roles:</th>
+                    </tr>
+                    <tr>
+                      <td><input type = 'Checkbox' value = 'Admin' name = 'role-check' class = 'role_check'/></td>
+                      <td>Administration</td>
+                    </tr>
+                    <tr>
+                      <td><input type = 'Checkbox' value = 'Projects' name = 'role-check' class = 'role_check'/></td>
+                      <td>Projects</td>
+                    </tr>
+                    <tr>
+                      <td><input type = 'Checkbox' value = 'Tasks' name = 'role-check' class = 'role_check'/></td>
+                      <td>Projects/Tasks</td>
+                    </tr>
+                    <tr>
+                      <td><input type = 'Checkbox' value = 'Budget' name = 'role-check' class = 'role_check'/></td>
+                      <td>Projects/Budget</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class = 'submission'>
+              <input type = 'submit' class = 'btn-active' name = 'submit' value = 'Submit' />
+            </div>
+          </form>
+    </div>
+</div>
+  
+<script>
+    $(document).ready(function(){
+        $('#add-user').click(function(){
+            $('#myModal').show();
+        });
+        $('.close').click(function(){
+            $('.modal').hide();
+        });
+        $('#select_all').click(function(){
+            $('.appr_check').prop('checked', this.checked);
+        });
+        $('#select_all_roles').click(function(){
+            $('.role_check').prop('checked', this.checked);
+        });
+    });
+</script>
+{% endblock %}

@@ -8,6 +8,7 @@
     <script src = "{{url_for('static', filename = 'js/jquery/dist/jquery.js')}}"></script>
     <script src = "{{url_for('static', filename = 'js/jquery/dist/jquery.min.js')}}"></script>
     <script src = "{{url_for('static', filename = 'js/jquery/dist/jquery-ui.min.js')}}"></script>
+    <script src = "{{url_for('static', filename = 'js/search-box.js')}}"></script>
   </head>
   <body>
     <nav class = "main-nav">
@@ -16,7 +17,7 @@
         {% if  'Admin' in role  or 'root' in role%}
         <li><a href = "{{url_for('admin.admin')}}">Administration</a></li>
         {% endif %}
-        {% if 'Logistics' in role or 'Manager' in role or 'root' in role%}
+        {% if 'Projects' in role or 'Tasks' in role or 'Budget' in role or 'root' in role%}
         <li><a href = "#">Projects</a></li>
         {% endif %}
         <li class="dropdown">
