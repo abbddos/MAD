@@ -7,7 +7,7 @@ class GetAllUsers(Resource):
     def get(self):
         qrys = Admin.Users.GetAllUsers()
         data1 = []
-        for qry in qrys:
+        for qry in qrys.items:
             data = {}
             data['UserId'] = qry.UserId
             data['FirstName'] = qry.FirstName
