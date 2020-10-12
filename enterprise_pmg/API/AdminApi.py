@@ -25,7 +25,20 @@ class GetAllUsers(Resource):
     
 class GetUserByID(Resource):
     def get(self, uid):
-        return Admin.Users.GetUserByID(uid)
+        data = dict()
+        qry = Admin.Users.GetUserByID(uid)
+        data['UserId'] = qry.UserId
+        data['FirstName'] = qry.FirstName
+        data['LastName'] = qry.LastName
+        data['UserName'] = qry.UserName
+        data['Position'] = qry.Position
+        data['Department'] = qry.Department
+        data['Email'] = qry.Email
+        data['Phone'] = qry.Phone
+        data['Role'] = qry.Role
+        data['Status'] = qry.Status
+        data['ProfilePic'] = qry.ProfilePic
+        return data
 
 class GetCompanyByID(Resource):
     def get(self, cid):

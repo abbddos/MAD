@@ -46,8 +46,8 @@ app.register_blueprint(admin.mod)
 
 
 #Connecting REST API...
-api.add_resource(AdminApi.GetAllUsers, '/Admin/GetAllUsers')
-api.add_resource(AdminApi.GetUserByID, '/Admin/GetUserByID/<uid>')
-api.add_resource(AdminApi.GetCompanyByID, '/Admin/GetCompanyByID/<cid>')
+api.add_resource(AdminApi.GetAllUsers, '/API/Admin/GetAllUsers')
+api.add_resource(AdminApi.GetUserByID, '/API/Admin/GetUserByID/<uid>')
+api.add_resource(AdminApi.GetCompanyByID, '/API/Admin/GetCompanyByID/<cid>')
 
 

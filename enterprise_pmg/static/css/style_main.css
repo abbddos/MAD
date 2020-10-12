@@ -21,6 +21,26 @@ body{
   z-index: 1;
 }
 
+ .small-circle{
+  vertical-align:middle;
+  margin-top: 3px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  float: left;
+}
+
+.big-circle{
+  margin-top: -65px;
+  vertical-align: middle;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  float: left;
+}
+
+
+
 ul {
   list-style-type: none;
   margin: 0;
@@ -53,8 +73,12 @@ li.dropdown {
   display: inline-block;
   float: right;
   margin-right: 5%;
+  padding: 2px;
 }
 
+.dropbtn {
+  float: right;
+}
 .dropdown-content {
   display: none;
   position: absolute;
@@ -62,6 +86,7 @@ li.dropdown {
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
+  margin-top: 50px;  
 }
 
 .dropdown-content a {
@@ -135,8 +160,8 @@ h3{
 .actionpage{
   margin-top: none;
   padding: 15px;
-  padding-right: 10px;
-  width: 80%;
+  padding-right: 0px;
+  width: 81%;
   float: right;
   text-align: center;
 }

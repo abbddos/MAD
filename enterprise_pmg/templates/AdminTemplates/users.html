@@ -22,6 +22,7 @@
             </tr>
         </thead>
         {% for u in allusers %}
+          {% if u.UserName != 'admin' %}
             <tr class = 'table-row {{u.Status}}'>
                 <td>{{u.UserId}}</td>
                 <td>{{u.FirstName}}</td>
@@ -33,9 +34,10 @@
                 <td>{{u.Phone}}</td>
                 <td>{%for r in u.Role%}{{r}}, {% endfor %}</td>
                 <td>{{u.Status}}</td>
-                <td><a href = ""><img src = "{{url_for('static', filename = 'images/edit.png')}}" style = 'height:25px; width: 25px;'/></a></td>
-                <td><a href = ""><img src = "{{url_for('static', filename = 'images/reset_password.png')}}" style = 'height:25px; width: 25px;'/></a></td>
+                <td><a href = "#" class = 'EditUser' id = "{{u.UserId}}"><img src = "{{url_for('static', filename = 'images/edit.png')}}" style = 'height:25px; width: 25px;'/></a></td>
+                <td><a href = "{{url_for('admin.ResetPassword', uid = u.UserId)}}"><img src = "{{url_for('static', filename = 'images/reset_password.png')}}" style = 'height:25px; width: 25px;'/></a></td>
             </tr>
+          {% endif %}  
         {% endfor %}
         </tbody>
     </table>
@@ -55,12 +57,12 @@
             <h3>Create New User <span class="close">&times;</span></h3>
             <div class = 'fields'>
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-              {{ render_field(form_c.firstname) }}
-              {{ render_field(form_c.lastname) }}
-              {{ render_field(form_c.position)}}
-              {{ render_field(form_c.department)}}
-              {{ render_field(form_c.email)}}
-              {{ render_field(form_c.phone1)}}
+              {{ render_field(form.firstname) }}
+              {{ render_field(form.lastname) }}
+              {{ render_field(form.position)}}
+              {{ render_field(form.department)}}
+              {{ render_field(form.email)}}
+              {{ render_field(form.phone1)}}
               <div class = 'row'>
                 <div class = 'col-a'>
                   <label>Roles:</label>
@@ -97,9 +99,93 @@
           </form>
     </div>
 </div>
+
+
+<div id="myModal_1" class="modal">
+  <div class="modal-content" style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
+      <form method = 'POST' id = 'editsubmit' style = 'width:100%;'>
+          <h3 id = 'title'> <img id = 'userpic' class = 'big-circle' />Edit User<span class='close'>&times;</span> </h3>
+          <div class = 'userpicture'style = 'height: 50px;'>
+            
+          </div>
+          <div class = 'fields' >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class = 'row'>
+              <div class = 'col-a'>
+                <label>User ID: </label>
+              </div>
+              <div class = 'col-b'>
+                <input type = 'text' id = 'uid' disabled/> 
+              </div>
+            </div>
+            <div class = 'row'>
+              <div class = 'col-a'>
+                <label>Username: </label>
+              </div>
+              <div class = 'col-b'>
+                <input type = 'text' id = 'uname' disabled/> 
+              </div>
+            </div>
+            {{ render_field(form.firstname, id = 'fname') }}
+            {{ render_field(form.lastname, id = 'lname') }}
+            {{ render_field(form.position, id = 'pos')}}
+            {{ render_field(form.department, id = 'dept')}}
+            {{ render_field(form.email, id = 'e_mail')}}
+            {{ render_field(form.phone1, id = 'phone')}}
+            <div class = 'row'>
+              <div class = 'col-a'>
+                <label>Roles:</label>
+              </div>
+              <div class = 'col-b'>
+                <table>
+                  <tr>
+                    <th><input type = 'Checkbox' id = 'select_all_roles_edit' />Select All</th>
+                    <th>Roles:</th>
+                  </tr>
+                  <tr>
+                    <td><input type = 'Checkbox' value = 'Admin' name = 'role-check' class = 'role_check_edit' id = 'admincheck'/></td>
+                    <td>Administration</td>
+                  </tr>
+                  <tr>
+                    <td><input type = 'Checkbox' value = 'Projects' name = 'role-check' class = 'role_check_edit' id = 'projectcheck'/></td>
+                    <td>Projects</td>
+                  </tr>
+                  <tr>
+                    <td><input type = 'Checkbox' value = 'Tasks' name = 'role-check' class = 'role_check_edit' id = 'taskcheck'/></td>
+                    <td>Projects/Tasks</td>
+                  </tr>
+                  <tr>
+                    <td><input type = 'Checkbox' value = 'Budget' name = 'role-check' class = 'role_check_edit' id = 'budgetcheck'/></td>
+                    <td>Projects/Budget</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class = 'row'>
+              <div class = 'col-a'>
+                <label>Status: </label>
+              </div>
+              <div class = 'col-b'>
+                <select name = 'status' id = 'status'>
+                  <option value = 'Active'>Active</option>
+                  <option value = 'Inactive'>Inactive</option>
+                </select>
+              </div>
+            </div>
+            <input type = 'text' id = 'profilepic' name = 'profilepic' hidden />
+          </div>
+          <div class = 'submission'>
+            <input type = 'submit' class = 'btn-active' name = 'submit' value = 'Submit' />
+          </div>
+        </form>
+  </div>
+</div>
   
 <script>
     $(document).ready(function(){
+
+        var uid;
+
         $('#add-user').click(function(){
             $('#myModal').show();
         });
@@ -112,6 +198,38 @@
         $('#select_all_roles').click(function(){
             $('.role_check').prop('checked', this.checked);
         });
+
+        $('#select_all_roles_edit').click(function(){
+            $('.role_check_edit').prop('checked', this.checked);
+        });
+
+        $('.EditUser').on('click',function(){
+          uid = $(this).attr('id');
+          $('#myModal_1').show();
+          $.getJSON('/API/Admin/GetUserByID/' + $(this).attr('id'), function(data){
+            //alert(data.UserName);
+            $('#uid').val(data.UserId);
+            $('#uname').val(data.UserName);
+            $('#fname').val(data.FirstName);
+            $('#lname').val(data.LastName);
+            $('#pos').val(data.Position);
+            $('#dept').val(data.Department);
+            $('#e_mail').val(data.Email);
+            $('#phone').val(data.Phone);
+            $('#status').prepend("<option value = '"+data.Status+"' selected hidden>"+data.Status+"</option>" );
+            $('#profilepic').val(data.ProfilePic);
+            $('#userpic').attr('src' , '/static/images/users/' + data.ProfilePic);
+            $.each(data.Role, function(key, val){
+                if(val === 'Admin'){$('#admincheck').attr('checked', 'true');}
+                if(val === 'Projects'){$('#projectcheck').attr('checked', 'true');}
+                if(val === 'Tasks'){$('#taskcheck').attr('checked', 'true');}
+                if(val === 'Budget'){$('#budgetcheck').attr('checked', 'true');}
+            });
+          });
+          $('#editsubmit').attr('action', "/admin/UpdateUser/" + uid);
+        });
+        
     });
 </script>
+
 {% endblock %}

@@ -33,12 +33,17 @@ class Users(db.Model):
         db.session.commit()
 
     def GetAllUsers():
-        qrys = Users.query.all()
+        qrys = Users.query.order_by(Users.UserId).all()
         return qrys
 
     def GetUserByID(uid):
         qry = Users.query.filter_by(UserId = uid).first()
         return qry
+
+    def GetProfilePic(uname):
+        qry = Users.query.filter_by(UserName = uname).first()
+        propic = qry.ProfilePic
+        return propic
         
 
     def createusername(firstname, lastname):
@@ -94,6 +99,19 @@ class Users(db.Model):
         usr.Password = hashpass
         db.session.commit()
 
+    def RESET_PASSWORD(uid):
+        usr = Users.GetUserByID(uid)
+        username = usr.UserName
+        email = usr.Email
+        firstname = usr.FirstName
+        pswd = username + '@123'
+        m = hashlib.sha256()
+        m.update(pswd.encode('utf8'))
+        hashpass = m.hexdigest()
+        usr.Password = hashpass
+        db.session.commit()
+        return firstname, pswd, email
+
     def LOGGER(username, password):
         #try:
         if password != 'admin':
@@ -101,14 +119,16 @@ class Users(db.Model):
             m.update(password.encode('utf8'))
             pswd = m.hexdigest()
             usr = Users.query.filter_by(UserName = username, Password = pswd).first()
-            if usr.UserName == username and usr.Password == pswd and usr.Status == 'Active':
-                return {'username': usr.UserName, 'role': usr.Role, 'Logged': True}
+            if usr:
+                if usr.UserName == username and usr.Password == pswd and usr.Status == 'Active':
+                    return {'username': usr.UserName, 'role': usr.Role, 'ProPic': usr.ProfilePic, 'Logged': True}
             else:
                 return{'Logged': False}
         else:
             usr = Users.query.filter_by(UserName = username, Password = password).first()
-            if usr.UserName == username and usr.Password == password and usr.Status == 'Active':
-                return {'username': usr.UserName, 'role': usr.Role, 'Logged': True}
+            if usr:
+                if usr.UserName == username and usr.Password == password and usr.Status == 'Active':
+                    return {'username': usr.UserName, 'role': usr.Role, 'ProPic': usr.ProfilePic,'Logged': True}
             else:
                 return{'Logged': False}
         #except:

@@ -48,6 +48,7 @@ def login():
             logger = Admin.Users.LOGGER(username, passwd)
             if logger['Logged'] == True:
                 session['username'] = logger['username']
+                session['ProPic'] = url_for('static', filename = 'images/users/' + logger['ProPic'])
                 #session['password'] = logger['password']
                 session['role'] = logger['role']
                 return redirect(url_for('home'))
@@ -108,7 +109,7 @@ def ChangeForgotPassword(token):
 
 @app.route('/home')
 def home():
-    return render_template('LoginTemplates/home.html', username = session['username'], role = session['role'] )
+    return render_template('LoginTemplates/home.html', username = session['username'], role = session['role'], image_file = session['ProPic'])
 
 
 
