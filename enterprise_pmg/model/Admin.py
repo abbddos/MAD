@@ -33,7 +33,7 @@ class Users(db.Model):
         db.session.commit()
 
     def GetAllUsers():
-        qrys = Users.query.order_by(Users.UserId).all()
+        qrys = Users.query.order_by(Users.UserId).paginate()
         return qrys
 
     def GetUserByID(uid):
@@ -65,7 +65,7 @@ class Users(db.Model):
         return pswd, hashpass
 
     def SELECT_ALL():
-        return Users.query.all()
+        return Users.query.paginate()
 
     def SELECT_ONE_USER(username):
         return Users.query.filter_by(UserName = username).first()
