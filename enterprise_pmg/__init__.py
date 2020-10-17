@@ -14,6 +14,7 @@ app = Flask(__name__)
 config_json = open('config.json',)
 confs = json.loads(config_json.read())
 
+
 app.secret_key = confs['SecretKey']
 app.config['SQLALCHEMY_DATABASE_URI'] = confs['Database-URI']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -26,6 +27,7 @@ app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = confs['Email-Username']
 app.config['MAIL_PASSWORD'] = confs['Email-Password']
 app.config['MAIL_DEFAULT_SENDER'] = confs['Email-Username']
+
 
 #Creating application APIs.
 db = SQLAlchemy(app)
