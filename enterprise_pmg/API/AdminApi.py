@@ -53,4 +53,5 @@ class GetCompanyByID(Resource):
         data['POBox'] = qry.POBox
         data['Registration'] = qry.Registration
         data['Description'] = qry.Description
+        data['Logo'] = qry.Logo
         return data

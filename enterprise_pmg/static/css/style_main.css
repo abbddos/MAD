@@ -203,6 +203,16 @@ form{
   text-align: right;
 }
 
+.company-info{
+  margin-top: 2%;
+  width: 60%;
+  background-color: #eee; /* Grey background color */
+  margin-left: 15%;
+  padding: 15px;
+  
+  border-radius: 15px;
+}
+
 input[type = text]{
   width: 75%;
   height: 30px;

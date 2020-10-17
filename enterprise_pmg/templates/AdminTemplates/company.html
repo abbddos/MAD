@@ -1,0 +1,51 @@
+{% extends 'AdminTemplates/admin.html'%}
+{% from 'renderfield.html' import render_field %}
+{% block adminpage%}
+<div class = 'actionpage'>
+    <form method = 'POST' style = 'margin-top: 2%; box-shadow: 5px 10px 20px rgb(155, 154, 154);' enctype = "multipart/form-data">
+        <h3 id = 'title'> <img id = 'Logo-circle' class = 'big-circle' />Company Profile</h3>
+        <div class = 'fields' style =  'margin-top: 8%;'>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            {{render_field(form.CompanyName)}}
+            {{render_field(form.Address)}}
+            {{render_field(form.Phone_1)}}
+            {{render_field(form.Phone_2)}}
+            {{render_field(form.Email)}}
+            {{render_field(form.POBox)}}
+            {{render_field(form.Registration)}}
+            {{render_field(form.Description)}}
+            {{render_field(form.Logo)}}
+        </div>
+        <div class = 'submission'>
+            {{form.submit(class = 'btn-active')}}
+        </div>
+        <div class = 'flashes'>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class = "{{category}}">
+                            <p>{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function(){
+        $.getJSON('/API/Admin/GetCompanyByID/1', function(data){
+            $('#CompanyName').val(data.CompanyName);
+            $('#Address').val(data.Address);
+            $('#Phone_1').val(data.Phone_1);
+            $('#Phone_2').val(data.Phone_2);
+            $('#Email').val(data.Email);
+            $('#POBox').val(data.POBox);
+            $('#Registration').val(data.Registration);
+            $('#Description').val(data.Description);
+            $('#Logo').val(data.logo);
+            $('#Logo-circle').attr('src', '/static/images/company/' + data.Logo);
+        });
+    });
+</script>
+{% endblock %}

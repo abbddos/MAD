@@ -68,7 +68,7 @@
 </div>
 <div id="myModal" class="modal">
     <div class="modal-content" style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
-        <form method = 'POST' action = "{{url_for('admin.CreateNewUser')}}" style = 'width:100%;'>
+        <form method = 'POST' action = "{{url_for('admin.CreateNewUser')}}" style = 'width:100%;' id = 'CreateUserForm'>
             <h3>Create New User <span class="close">&times;</span></h3>
             <div class = 'fields'>
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -109,7 +109,7 @@
               </div>
             </div>
             <div class = 'submission'>
-              <input type = 'submit' class = 'btn-active' name = 'submit' value = 'Submit' />
+              {{form.submit(class = 'btn-active')}}
             </div>
           </form>
     </div>
@@ -118,9 +118,9 @@
 
 <div id="myModal_1" class="modal">
   <div class="modal-content" style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
-      <form method = 'POST' id = 'editsubmit' style = 'width:100%;'>
-          <h3 id = 'title'> <img id = 'userpic' class = 'big-circle' />Edit User<span class='close'>&times;</span> </h3>
-          <div class = 'fields' >
+      <form method = 'POST' id = 'EditUserForm' style = 'width:100%;'>
+          <h3 id = 'title' > <img id = 'userpic' class = 'big-circle' />Edit User<span class='close'>&times;</span> </h3>
+          <div class = 'fields' style = 'margin-top: 8%;'>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class = 'row'>
               <div class = 'col-a'>
@@ -187,7 +187,7 @@
             <input type = 'text' id = 'profilepic' name = 'profilepic' hidden />
           </div>
           <div class = 'submission'>
-            <input type = 'submit' class = 'btn-active' name = 'submit' value = 'Submit' />
+            {{form.submit(class = 'btn-active')}}
           </div>
         </form>
   </div>
@@ -238,9 +238,8 @@
                 if(val === 'Budget'){$('#budgetcheck').attr('checked', 'true');}
             });
           });
-          $('#editsubmit').attr('action', "/admin/UpdateUser/" + uid);
+          $('#EditUserForm').attr('action', "/admin/UpdateUser/" + uid);
         });
-        
     });
 </script>
 

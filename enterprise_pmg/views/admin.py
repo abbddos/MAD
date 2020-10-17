@@ -6,8 +6,15 @@ from enterprise_pmg.Forms import AdminForms
 #from APIs import EnterForms
 #from  APIs import EnterpriseAPI
 import os
+from werkzeug.utils import secure_filename
+
 
 mod = Blueprint('admin', __name__, url_prefix = '/admin')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @mod.route('/')
 def admin():
@@ -82,3 +89,34 @@ def ResetPassword(uid):
         flash(str(e), category = 'fail')
         return redirect(url_for('admin.users'))
     return redirect(url_for('admin.users'))
+
+@mod.route('/CompanyProfile', methods = ['GET','POST'])
+def CompanyProfile():
+    form = AdminForms.CompanyProfileForm(request.form)
+    cmp = Admin.CompanyProfile.GetCompanyByID(1)
+    filename = cmp.Logo
+    if request.method == 'POST':
+        if request.form['submit'] == 'Submit' and form.validate():
+            try:
+                file = request.files['Logo']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.root_path , 'static/images/company', filename))
+                Admin.CompanyProfile.UpdateCompanyProfile(
+                    request.form['CompanyName'],
+                    request.form['Address'],
+                    request.form['Phone_1'],
+                    request.form['Phone_2'],
+                    request.form['Email'],
+                    request.form['POBox'],
+                    request.form['Registration'],
+                    request.form['Description'],
+                    filename
+                )
+                flash('Company profile was updated successfully...', category = 'success')
+                return redirect(url_for('admin.CompanyProfile'))
+            except Exception as e:
+                flash(str(e), category = 'fail')
+                return redirect(url_for('admin.CompanyProfile'))
+    return render_template('AdminTemplates/company.html', username = session['username'], role = session['role'], image_file = session['ProPic'],
+                            form = form)

@@ -143,7 +143,8 @@ class CompanyProfile(db.Model):
     Email = db.Column(db.String(50))
     POBox = db.Column(db.String(10))
     Registration = db.Column(db.String(50))
-    Description = db.Column(db.Text) 
+    Description = db.Column(db.Text)
+    Logo =  db.Column(db.String(50), nullable = True)
 
     def __init__(self, name, address, phone1, phone2, email, pobox, reg, desc):
         self.CompanyName = name
@@ -159,7 +160,7 @@ class CompanyProfile(db.Model):
         qry =  CompanyProfile.query.filter_by(CompanyID = cid).first()
         return qry
     
-    def UpdateCompanyProfile(name, address, phone1, phone2, email, pobox, reg, desc):
+    def UpdateCompanyProfile(name, address, phone1, phone2, email, pobox, reg, desc, logo):
         cmp = CompanyProfile.query.first()
         cmp.CompanyName = name
         cmp.Address = address
@@ -169,4 +170,5 @@ class CompanyProfile(db.Model):
         cmp.POBox = pobox
         cmp.Registration = reg
         cmp.Description = desc
+        cmp.Logo = logo
         db.session.commit()
