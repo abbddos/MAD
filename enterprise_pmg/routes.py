@@ -6,22 +6,19 @@ from flask_wtf.csrf import CSRFProtect, CSRFError
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import json
 from enterprise_pmg.model import Admin
-from enterprise_pmg import app
+from enterprise_pmg import app, mail
 from enterprise_pmg.Forms import LoginForms
 
 
 def ForgotPasswordToken(email):
-    con, cur = root()
+
     try:
-        cur.execute("SELECT firstname, username FROM users WHERE email = %s ", (email,))
-        usr = cur.fetchone()
-        con.close()
+        usr = Admin.Users.query.filter_by(Email = email).first()
 
         s = Serializer(app.secret_key, 1800)
-        token = s.dumps({'user':usr[1]}).decode('utf-8')
+        token = s.dumps({'user':usr.UserName}).decode('utf-8')
         return usr, token
     except:
-        con.close()
         return None, None
 
 def VerifyToken(token):
@@ -77,7 +74,7 @@ def ForgotPassword():
                 usr, token = ForgotPasswordToken(request.form['email'])
                 if token is not None:
                     msg = Message('New Enterprise Account', recipients = [str(request.form['email'])])
-                    msg.body = "Dear {}:\n please follow the link below to change your password. \n Thank you for using Enterprise. \n {}".format(usr[0], url_for('ChangeForgotPassword', usr = usr[1], token = token, _external=True))
+                    msg.body = "Dear {}:\n please follow the link below to change your password. \n Thank you for using Enterprise. \n {}".format(usr.FirstName, url_for('ChangeForgotPassword', usr = usr.UserName, token = token, _external=True))
                     mail.send(msg)
                     flash('An email was sent to your email account', category = 'success')
                     return redirect(url_for('ForgotPassword'))
@@ -91,15 +88,19 @@ def ForgotPassword():
 
 @app.route('/change_forgot_password/<token>', methods = ['GET','POST'])
 def ChangeForgotPassword(token):
-    form = LoginForms.ChangePassword(request.form)
+    form = LoginForms.ChangeForgotPassword(request.form)
     usr = VerifyToken(token)
     if usr:
         if request.method == 'POST':
-            if request.form['submit'] == 'Submit' and request.form['newpswd'] == request.form['confirm']:
+            if request.form['submit'] == 'Submit' and form.validate():
                 try:
-                    ChangePassword1(usr, request.form['newpswd'])
-                    flash('Password changed...', category = 'success')
-                    return redirect(url_for('login'))
+                    if request.form['NewPassword'] != request.form['ConfirmNewPassword']:
+                        flash('New password does not match confirmatin...', category = 'fail')
+                        return redirect(url_for('ChangeForgotPassword', token = token))
+                    else: 
+                        Admin.Users.CHANGE_FORGOT_PASSWORD(usr, request.form['NewPassword'])
+                        flash('Password changed...', category = 'success')
+                        return redirect(url_for('login'))
                 except Exception as e:
                     flash(str(e), category = 'fail')
                     return redirect(url_for('login'))

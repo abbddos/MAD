@@ -40,6 +40,23 @@ class GetUserByID(Resource):
         data['ProfilePic'] = qry.ProfilePic
         return data
 
+class GetUserByUname(Resource):
+    def get(self, uname):
+        data = dict()
+        qry = Admin.Users.SELECT_ONE_USER(uname)
+        data['UserId'] = qry.UserId
+        data['FirstName'] = qry.FirstName
+        data['LastName'] = qry.LastName
+        data['UserName'] = qry.UserName
+        data['Position'] = qry.Position
+        data['Department'] = qry.Department
+        data['Email'] = qry.Email
+        data['Phone'] = qry.Phone
+        data['Role'] = qry.Role
+        data['Status'] = qry.Status
+        data['ProfilePic'] = qry.ProfilePic
+        return data
+
 class GetCompanyByID(Resource):
     def get(self, cid):
         qry = Admin.CompanyProfile.GetCompanyByID(cid)

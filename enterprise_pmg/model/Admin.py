@@ -83,19 +83,22 @@ class Users(db.Model):
         updateduser.ProfilePic = profilepic
         db.session.commit()
 
-    def CHANGE_PASSWORD_BY_USERNAME(username, newpassword):
+    def CHANGE_PASSWORD_BY_USERNAME(username, oldpassword, newpassword):
         m = hashlib.sha256()
+        n = hashlib.sha256()
+        n.update(oldpassword.encode('utf8'))
+        oldhash = n.hexdigest()
         m.update(newpassword.encode('utf8'))
         hashpass = m.hexdigest()
-        usr = Users.query.filter_by(UserName = username).first()
+        usr = Users.query.filter_by(UserName = username, Password = oldhash).first()
         usr.Password = hashpass
         db.session.commit()
 
-    def CHANGE_PASSWORD_BY_EMAIL(email, newpassword):
+    def CHANGE_FORGOT_PASSWORD(uname, newpassword):
         m = hashlib.sha256()
         m.update(newpassword.encode('utf8'))
         hashpass = m.hexdigest()
-        usr = Users.query.filter_by(Email = email).first()
+        usr = Users.query.filter_by(UserName = uname).first()
         usr.Password = hashpass
         db.session.commit()
 

@@ -1,0 +1,64 @@
+{% extends 'ProfileTemplates/profile.html'%}
+{% from 'renderfield.html' import render_field %}
+{% block profilepage%}
+<div class = 'actionpage'>
+    <form method = 'POST' style = 'margin-top: 2%; box-shadow: 5px 10px 20px rgb(155, 154, 154);' enctype = "multipart/form-data">
+        <h3 id = 'title'> <img id = 'userpic' class = 'big-circle' />User Profile</h3>
+        <div class = 'fields' style =  'margin-top: 8%;'>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class = 'row'>
+                <div class = 'col-a'>
+                    <label>User ID:</label>
+                </div>
+                <div class = 'col-b'>
+                    <input type = 'text' id = 'uid' disabled />
+                </div>
+            </div>
+            <div class = 'row'>
+                <div class = 'col-a'>
+                    <label>Username: </label>
+                </div>
+                <div class = 'col-b'>
+                    <input type = 'text' id = 'uname' disabled />
+                </div>
+            </div>
+            {{render_field(form.firstname)}}
+            {{render_field(form.lastname)}}
+            {{render_field(form.position, disabled = True)}}
+            {{render_field(form.department, disabled = True)}}
+            {{render_field(form.email)}}
+            {{render_field(form.phone1)}}
+            {{render_field(form.ProfilePic)}}
+        </div>
+        <div class = 'submission'>
+            {{form.submit(class = 'btn-active')}}
+        </div>
+        <div class = 'flashes'>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class = "{{category}}">
+                            <p>{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function(){
+        $.getJSON('/API/Admin/GetUserByUname/' + '{{uname}}', function(data){
+            $('#uid').val(data.UserId);
+            $('#uname').val(data.UserName);
+            $('#firstname').val(data.FirstName);
+            $('#lastname').val(data.LastName);
+            $('#position').val(data.Position);
+            $('#department').val(data.Department);
+            $('#email').val(data.Email);
+            $('#phone1').val(data.Phone);
+            $('#userpic').attr('src' , '/static/images/users/' + data.ProfilePic);
+        });
+    });
+</script>
+{% endblock %}

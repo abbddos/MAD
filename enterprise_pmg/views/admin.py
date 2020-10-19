@@ -7,6 +7,7 @@ from enterprise_pmg.Forms import AdminForms
 #from  APIs import EnterpriseAPI
 import os
 from werkzeug.utils import secure_filename
+from PIL import Image
 
 
 mod = Blueprint('admin', __name__, url_prefix = '/admin')
@@ -101,7 +102,10 @@ def CompanyProfile():
                 file = request.files['Logo']
                 if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.root_path , 'static/images/company', filename))
+                    out_size = (125,125)
+                    i = Image.open(file)
+                    i.thumbnail(out_size)
+                    i.save(os.path.join(app.root_path , 'static/images/company', filename))
                 Admin.CompanyProfile.UpdateCompanyProfile(
                     request.form['CompanyName'],
                     request.form['Address'],

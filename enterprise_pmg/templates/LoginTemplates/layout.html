@@ -24,7 +24,7 @@
           <img class = 'small-circle account-img' src = "{{image_file}}" />
           <a href ="javascript:void(0)" class="dropbtn"> {{username}}</a>
           <div class="dropdown-content">
-            <a href="#">View Profile</a>
+            <a href="{{url_for('profile.UserProfile', uname = username)}}">View Profile</a>
             <a href="{{url_for('logout')}}">Log Out</a>
           </div>
         </li>

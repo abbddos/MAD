@@ -9,3 +9,8 @@ class LoginForm(Form):
 
 class ForgotPassword(Form):
     email = StringField('Email', validators = [DataRequired()])
+
+class ChangeForgotPassword(Form):
+    NewPassword = PasswordField('New Password: ', validators = [DataRequired()])
+    ConfirmNewPassword = PasswordField('Conform New Password: ', validators = [DataRequired()])
+    submit = SubmitField('Submit')
