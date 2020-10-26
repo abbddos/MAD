@@ -125,6 +125,8 @@ class Users(db.Model):
             if usr:
                 if usr.UserName == username and usr.Password == pswd and usr.Status == 'Active':
                     return {'username': usr.UserName, 'role': usr.Role, 'ProPic': usr.ProfilePic, 'Logged': True}
+                else:
+                    return {'Logged': False}
             else:
                 return{'Logged': False}
         else:
