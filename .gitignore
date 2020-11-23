@@ -1,2 +1,4 @@
 /venv
+/.vscode
+/enterprise_pmg/__pychache__
 /__pychache__

@@ -1,6 +1,8 @@
 from enterprise_pmg import db
 import hashlib
 
+# The following class, Users initiates new users and allows for the creation,...
+# and editing of users in the Enterprise system using its functions. 
 class Users(db.Model):
     UserId = db.Column(db.Integer, primary_key = True)
     FirstName = db.Column(db.String(50), nullable = False)
@@ -45,6 +47,15 @@ class Users(db.Model):
         propic = qry.ProfilePic
         return propic
         
+    # createusername function allows for creating a unique username,...
+    # it takes the first character from the users' firstname and the...
+    # whole last name in lower case and puts them together to generate...
+    # the new user's name. If the newly generated username already exists...
+    # in the database the value i shall be be added at the end of the ...
+    # newly generated username and the new result will be checked in the...
+    # database again. If the newly generated username with the value of i...
+    # exists in the database, i will be incremented by 1 and put in the end...
+    # of the new username until the newly generated username is unique.
 
     def createusername(firstname, lastname):
         user = firstname[0].lower() + lastname.lower()
@@ -115,8 +126,14 @@ class Users(db.Model):
         db.session.commit()
         return firstname, pswd, email
 
+    # The LOGGER function is designed to organize the loggin process into Enterprise system...
+    # It checkes for the existence of a username with a specific given hashed password in the database...
+    # and checkes whether the login username exists in the database and has an active status...
+    #  and returns a dictionary that contains data necessary to carry on with the loggin process... 
+    # and other processes in the Enterprise System, otherwise it returns a dictionary with the value ...
+    # of False.
+
     def LOGGER(username, password):
-        #try:
         if password != 'admin':
             m = hashlib.sha256()
             m.update(password.encode('utf8'))
@@ -136,8 +153,11 @@ class Users(db.Model):
                     return {'username': usr.UserName, 'role': usr.Role, 'ProPic': usr.ProfilePic,'Logged': True}
             else:
                 return{'Logged': False}
-        #except:
-        #    return {'Logged': False}
+
+# The CompanyProfile class simply contains information regarding...
+# the company or organization running Enterprise System.
+# Information registered in this class will be used in...
+# generating reports and invoices by the using company/organization.
 
 class CompanyProfile(db.Model):
     CompanyID = db.Column(db.Integer, primary_key = True)
@@ -176,4 +196,53 @@ class CompanyProfile(db.Model):
         cmp.Registration = reg
         cmp.Description = desc
         cmp.Logo = logo
+        db.session.commit()
+
+# The StakeHolder class is used for the purpose of storing data...
+# related to every entity related to a project whether it is...
+# government, suppliers, customers, contractors or subcontractors and...
+# implementing partners.
+
+class StakeHolder(db.Model):
+    SHID = db.Column(db.Integer, primary_key = True)
+    SHName = db.Column(db.String(100), nullable = False)
+    SHType = db.Column(db.String(25), nullable = False)
+    SHAddress = db.Column(db.String(100))
+    SHContact = db.Column(db.String(50))
+    SHEmail = db.Column(db.String(50))
+    SHStatus = db.Column(db.String(10))
+    SHDescription = db.Column(db.Text)
+
+    def __init__(self, shname, shtype, shaddress, shcontact, shemail, shstatus, shdescription):
+        self.SHName = shname
+        self.SHType = shtype
+        self.SHAddress = shaddress
+        self.SHContact = shcontact
+        self.SHEmail = shemail
+        self.SHStatus = shstatus
+        self.SHDescription = shdescription
+        db.session.add(self)
+        db.session.commit()
+
+    def GetAllStakeHolders():
+        qrys = StakeHolder.query.order_by(StakeHolder.SHID).paginate()
+        return qrys 
+
+    def GetStakeHolderByID(sid):
+        qry = StakeHolder.query.filter_by(SHID = sid).first()
+        return qry
+
+    def GetStakeHolderByName(sname):
+        qry = StakeHolder.query.filter_by(SHName = sname).all()
+        return qry
+
+    def UpdateStakeHolder(sid, sname, stype, saddress, scontact, semail, sstatus, sdescription):
+        SH = StakeHolder.query.filter_by(SHID = sid).first()
+        SH.SHName = sname
+        SH.SHType = stype
+        SH.SHAddress = saddress
+        SH.SHContact = scontact
+        SH.SHEmail = semail
+        SH.SHStatus = sstatus
+        SH.SHDescription = sdescription
         db.session.commit()

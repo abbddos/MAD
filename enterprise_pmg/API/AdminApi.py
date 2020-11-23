@@ -72,3 +72,34 @@ class GetCompanyByID(Resource):
         data['Description'] = qry.Description
         data['Logo'] = qry.Logo
         return data
+
+class GetAllStakeHolders(Resource):
+    def get(self):
+        qrys = Admin.StakeHolder.GetAllStakeHolders()
+        data1 = []
+        for qry in qrys.items:
+            data = {}
+            data['SHID'] = qry.SHID
+            data['SHName'] = qry.SHName
+            data['SHType'] = qry.SHType
+            data['SHAddress'] = qry.SHAddress
+            data['SHContact'] = qry.SHContact
+            data['SHEmail'] = qry.SHEmail
+            data['SHStatus'] = qry.SHStatus
+            data['SHDescription'] = qry.SHDescription
+            data1.append(data)
+        return {'info': data1}
+
+class GetStakeHolderByID(Resource):
+    def get(self, sid):
+        qry = Admin.StakeHolder.GetStakeHolderByID(sid)
+        data = dict()
+        data['SHID'] = qry.SHID
+        data['SHName'] = qry.SHName
+        data['SHType'] = qry.SHType
+        data['SHAddress'] = qry.SHAddress
+        data['SHContact'] = qry.SHContact
+        data['SHEmail'] = qry.SHEmail
+        data['SHStatus'] = qry.SHStatus
+        data['SHDescription'] = qry.SHDescription
+        return data

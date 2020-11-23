@@ -52,5 +52,7 @@ api.add_resource(AdminApi.GetAllUsers, '/API/Admin/GetAllUsers')
 api.add_resource(AdminApi.GetUserByID, '/API/Admin/GetUserByID/<uid>')
 api.add_resource(AdminApi.GetUserByUname, '/API/Admin/GetUserByUname/<uname>')
 api.add_resource(AdminApi.GetCompanyByID, '/API/Admin/GetCompanyByID/<cid>')
+api.add_resource(AdminApi.GetAllStakeHolders, '/API/Admin/GetAllStakeHolders')
+api.add_resource(AdminApi.GetStakeHolderByID, '/API/Admin/GetStakeHolderByID/<sid>')
 
 
