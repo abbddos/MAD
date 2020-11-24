@@ -1,0 +1,149 @@
+{% extends 'AdminTemplates/admin.html'%}
+{% from 'renderfield.html' import render_field %}
+{% block adminpage%}
+<div class = 'actionpage'>
+    <button id = 'add-user' class = 'btn-active' style = 'float: left; width: 200px;'>Create New Stake Holder</button>
+    <input type = 'text' style = 'border: solid rgb(0,0,100); border-width: 1px; border-radius: 3px; margin: 5px; float: left;box-shadow: 1px 1px 2px rgb(200,200,200);' placeholder = 'Search' id = 'srch' />
+    <table>
+        <thead>
+            <tr>
+                <th>ID:</th>
+                <th>Name:</th>
+                <th>Type:</th>
+                <th>Contact:</th>
+                <th>Email:</th>
+                <th>Status:</th>
+                <th>Edit:</th>   
+            </tr>
+        </thead>
+        {% for s in AllStakeHolders.items %}
+            <tr class = 'table-row {{s.SHStatus}}'>
+                <td>{{s.SHID}}</td>
+                <td>{{s.SHName}}</td>
+                <td>{{s.SHType}}</td>
+                <td>{{s.SHContact}}</td>
+                <td>{{s.SHEmail}}</td>
+                <td>{{s.SHStatus}}</td>
+                <td><a href = "#" class = 'EditUser' id = "{{s.SHID}}"><img src = "{{url_for('static', filename = 'images/edit.png')}}" style = 'height:25px; width: 25px;'/></a></td>
+            </tr> 
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class = 'paginator' style = 'margin-top: 20px;'>
+      {% for page_num in AllStakeHolders.iter_pages(left_edge = 1, right_edge = 1, left_current = 1, right_current = 2) %}
+        {% if page_num %}
+          {% if AllStakeHolders.page == page_num %}
+            <a href = "{{url_for('admin.StakeHolders', page = page_num)}}" class = 'pg-inline'>{{page_num}}</a>
+          {% else %}
+            <a href = "{{url_for('admin.StakeHolders', page = page_num)}}" class = 'pg-outline'>{{page_num}}</a>
+          {% endif %}
+        {% else %}
+          ...
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class = 'flashes'>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class = "{{category}}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </div>
+</div>
+<div id="myModal" class="modal">
+    <div class="modal-content" style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
+        <form method = 'POST' action = "{{url_for('admin.CreateNewStakeHolder')}}" style = 'width:100%;' id = 'CreateUserForm'>
+            <h3>Create New Stake Holder <span class="close">&times;</span></h3>
+            <div class = 'fields'>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              {{ render_field(form.StakeHolderName) }}
+              {{ render_field(form.StakeHolderType) }}
+              {{ render_field(form.StakeHolderAddress)}}
+              {{ render_field(form.StakeHolderContact)}}
+              {{ render_field(form.StakeHolderEmail)}}
+              {{ render_field(form.StakeHolderStatus)}}
+              {{ render_field(form.StakeHolderDescription) }}
+            </div>
+            <div class = 'submission'>
+              {{form.submit(class = 'btn-active')}}
+            </div>
+          </form>
+    </div>
+</div>
+
+
+<div id="myModal_1" class="modal">
+  <div class="modal-content" style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
+      <form method = 'POST' id = 'EditUserForm' style = 'width:100%;'>
+          <h3 id = 'title' >Edit Stake Holder<span class='close'>&times;</span> </h3>
+          <div class = 'fields'>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class = 'row'>
+              <div class = 'col-a'>
+                <label> ID: </label>
+              </div>
+              <div class = 'col-b'>
+                <input type = 'text' id = 'id' disabled/> 
+              </div>
+            </div>
+            {{ render_field(form.StakeHolderName, id = 'sname') }}
+            {{ render_field(form.StakeHolderType, id = 'stype') }}
+            {{ render_field(form.StakeHolderAddress, id = 'saddress')}}
+            {{ render_field(form.StakeHolderContact, id = 'scontact')}}
+            {{ render_field(form.StakeHolderEmail, id = 'semail')}}
+            {{ render_field(form.StakeHolderStatus, id = 'sstatus')}}
+            {{ render_field(form.StakeHolderDescription, id = 'sdescription') }}
+          </div>
+          <div class = 'submission'>
+            {{form.submit(class = 'btn-active')}}
+          </div>
+        </form>
+  </div>
+</div>
+  
+<script>
+    $(document).ready(function(){
+
+        var uid;
+
+        $('#add-user').click(function(){
+            $('#myModal').show();
+        });
+        $('.close').click(function(){
+            $('.modal').hide();
+        });
+        $('#select_all').click(function(){
+            $('.appr_check').prop('checked', this.checked);
+        });
+        $('#select_all_roles').click(function(){
+            $('.role_check').prop('checked', this.checked);
+        });
+
+        $('#select_all_roles_edit').click(function(){
+            $('.role_check_edit').prop('checked', this.checked);
+        });
+
+        $('.EditUser').on('click',function(){
+          uid = $(this).attr('id');
+          $('#myModal_1').show();
+          $.getJSON('/API/Admin/GetStakeHolderByID/' + $(this).attr('id'), function(data){
+            //alert(data.UserName);
+            $('#id').val(data.SHID);
+            $('#sname').val(data.SHName);
+            $('#stype').prepend("<option value = '"+ data.SHType+"' selected hidden>"+ data.SHType +"</option>");
+            $('#saddress').val(data.SHAddress);
+            $('#scontact').val(data.SHContact);
+            $('#semail').val(data.SHEmail);
+            $('#sstatus').prepend("<option value = '" + data.SHStatus + "' selected hidden>"+ data.SHStatus +"</option>");
+            $('#sdescription').val(data.SHDescription);
+          });
+          $('#EditUserForm').attr('action', "/admin/EditStakeHolder/" + uid);
+        });
+    });
+</script>
+
+{% endblock %}

@@ -23,3 +23,21 @@ class CompanyProfileForm(Form):
     Description = TextAreaField('Description: ')
     Logo = FileField('Logo: ', validators = [FileAllowed(['png', 'jpeg', 'jpg'])])
     submit = SubmitField('Submit')
+
+class StakeHolderForm(Form):
+    StakeHolderName = StringField('Stake Holder Name: ', validators = [DataRequired()])
+    StakeHolderType = SelectField('Stake Holder Type:', choices = [
+        ('Government','Government'),
+        ('Partner','Partner'),
+        ('Supplier','Supplier'),
+        ('Customer','Customer'),
+        ('Contractor/Sub-Contractor','Contractor/Sub-Contractor')], validators = [DataRequired()])
+    StakeHolderAddress = StringField('Stake Holder Address:')
+    StakeHolderContact = StringField('Stake Holder Contact:')
+    StakeHolderEmail = StringField('Stake Holder Email:')
+    StakeHolderStatus = SelectField('Stake Holder Status:', choices = [
+        ('Active','Active'),
+        ('Inactive','Inactive')
+    ])
+    StakeHolderDescription = TextAreaField('Stake Holder Description:')
+    submit = SubmitField('Submit')

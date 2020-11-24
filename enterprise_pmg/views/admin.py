@@ -91,6 +91,54 @@ def ResetPassword(uid):
         return redirect(url_for('admin.users'))
     return redirect(url_for('admin.users'))
 
+@mod.route('/StakeHolders', methods = ['GET','POST'])
+def StakeHolders():
+    form = AdminForms.StakeHolderForm(request.form)
+    AllStakeHolders = Admin.StakeHolder.GetAllStakeHolders()
+    return render_template('AdminTemplates/stakeholders.html', username = session['username'], role = session['role'], image_file = session['ProPic'],
+                            form = form, AllStakeHolders = AllStakeHolders)
+
+
+@mod.route('/CreateNewStakeHolder', methods = ['GET','POST'])
+def CreateNewStakeHolder():
+    form = AdminForms.StakeHolderForm(request.form)
+    if request.method == 'POST':
+        if request.form['submit'] == 'Submit' and form.validate():
+            try:
+                Admin.StakeHolder(request.form['StakeHolderName'],
+                                    request.form['StakeHolderType'],
+                                    request.form['StakeHolderAddress'],
+                                    request.form['StakeHolderContact'],
+                                    request.form['StakeHolderEmail'],
+                                    request.form['StakeHolderStatus'],
+                                    request.form['StakeHolderDescription']) 
+                flash('New Stake Holder was successfully created...', category = 'success')
+                return redirect(url_for('admin.StakeHolders'))
+            except Exception as e:
+                flash(str(e), category = 'fail')
+                return redirect(url_for('admin.StakeHolders'))
+    return redirect(url_for('admin.StakeHolders'))
+
+@mod.route('/EditStakeHolder/<sid>', methods = ['GET','POST'])
+def EditStakeHolder(sid):
+    form = AdminForms.StakeHolderForm(request.form)
+    if request.method == 'POST':
+        if request.form['submit'] == 'Submit' and form.validate():
+            try:
+                Admin.StakeHolder.UpdateStakeHolder(sid, request.form['StakeHolderName'],
+                                    request.form['StakeHolderType'],
+                                    request.form['StakeHolderAddress'],
+                                    request.form['StakeHolderContact'],
+                                    request.form['StakeHolderEmail'],
+                                    request.form['StakeHolderStatus'],
+                                    request.form['StakeHolderDescription'])
+                flash('Stake Holder information were successfully updated...', category = 'success')
+                return redirect(url_for('admin.StakeHolders')) 
+            except Exception as e:
+                flash(str(e), category = 'fail')
+                return redirect(url_for('admin.StakeHolders'))
+    return redirect(url_for('admin.StakeHolders'))
+
 @mod.route('/CompanyProfile', methods = ['GET','POST'])
 def CompanyProfile():
     form = AdminForms.CompanyProfileForm(request.form)
