@@ -38,7 +38,7 @@ api = Api(app)
 #Importing application packages
 from enterprise_pmg import routes
 from enterprise_pmg.views import admin, profile
-from enterprise_pmg.API import AdminApi 
+from enterprise_pmg.API import AdminApi, ProjectApi 
 #, profile, projects
 
 #Connecting Modules
@@ -48,11 +48,17 @@ app.register_blueprint(profile.mod)
 
 
 #Connecting REST API...
+#...Adminisration API...
 api.add_resource(AdminApi.GetAllUsers, '/API/Admin/GetAllUsers')
 api.add_resource(AdminApi.GetUserByID, '/API/Admin/GetUserByID/<uid>')
 api.add_resource(AdminApi.GetUserByUname, '/API/Admin/GetUserByUname/<uname>')
 api.add_resource(AdminApi.GetCompanyByID, '/API/Admin/GetCompanyByID/<cid>')
 api.add_resource(AdminApi.GetAllStakeHolders, '/API/Admin/GetAllStakeHolders')
 api.add_resource(AdminApi.GetStakeHolderByID, '/API/Admin/GetStakeHolderByID/<sid>')
+
+#...Projects API...
+api.add_resource(ProjectApi.GetAllProjects, '/API/Projects/GetAllProjects')
+api.add_resource(ProjectApi.GetProjectByID, '/API/Projects/GetProjectByID/<pid>')
+api.add_resource(ProjectApi.GetProjectByCode, '/API/Projects/GetProjectByCode/<code>')
 
 
