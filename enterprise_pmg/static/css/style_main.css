@@ -512,6 +512,26 @@ tr:nth-child(even):hover{
     cursor: pointer;
 }
 
+.closer {
+  color: white;
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.closer:hover,
+.closer:focus {
+  color: green;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.search:hover,
+.search:focus {
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .hide-message:hover,
 .hide-message:focus {
     color: white;
@@ -603,6 +623,36 @@ ul.warehouse{
   color: rgb(0,0,100);
 }
 
+.cards-container{
+  width: 50%;
+  margin-left: 10%;
+}
+
+.card{
+  width: 70%;
+  background-color: #eee; /* Grey background color */
+  margin-left: 15%;
+  padding: 15px;
+  box-shadow: 5px 10px 20px rgb(190, 190, 190);
+}
+
+.card-info tr:nth-child(even){
+  background-color: #eee;
+}
+
+.card-info tr{
+  background-color: #eee;
+}
+
+.card-info{
+  background-color: #eee;
+  box-shadow: none;
+}
+
+.card-info-title{
+  font-weight: bold;
+}
+
 .pg-outline{
   text-decoration: none;
   font-size: small;
@@ -627,6 +677,7 @@ ul.warehouse{
   width: 25px;
   padding: 3px;
 }
+
 
 @media only screen and (max-width: 1366px) and (max-height: 1024px) and (orientation: landscape){
 

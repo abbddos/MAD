@@ -1,5 +1,5 @@
 from flask_restful import Api, Resource
-from enterprise_pmg.model import Project
+from enterprise_pmg.model import Project, Admin
 
 class GetAllProjects(Resource):
     def get(self):
@@ -57,3 +57,4 @@ class GetProjectByCode(Resource):
         data['Description'] = qry.Description
         data['Log'] = qry.Log
         return data
+

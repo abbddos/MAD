@@ -15,3 +15,4 @@ class ProjectForm(Form):
     StakeHolders = StringField('Stakeholders:')
     Description = TextAreaField('Description:')
     Log = TextAreaField('Project Log:')
+    submit = SubmitField('Submit')

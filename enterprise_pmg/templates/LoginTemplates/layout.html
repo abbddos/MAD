@@ -18,7 +18,7 @@
         <li><a href = "{{url_for('admin.admin')}}">Administration</a></li>
         {% endif %}
         {% if 'Projects' in role or 'Tasks' in role or 'Budget' in role or 'root' in role%}
-        <li><a href = "#">Projects</a></li>
+        <li><a href = "{{url_for('projects.projects')}}">Projects</a></li>
         {% endif %}
         <li class="dropdown">
           <img class = 'small-circle account-img' src = "{{image_file}}" />
