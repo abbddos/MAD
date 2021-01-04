@@ -1,4 +1,5 @@
 from flask_restful import Api, Resource
+from datetime import datetime, date
 from enterprise_pmg.model import Project, Admin
 
 class GetAllProjects(Resource):
@@ -28,8 +29,8 @@ class GetProjectByID(Resource):
         data = dict()
         data['ProjectID'] = qry.ProjectID
         data['ProjectCode'] = qry.ProjectCode
-        data['StartDate'] = qry.StartDate
-        data['EndDate'] = qry.EndDate
+        data['StartDate'] = str(qry.StartDate)
+        data['EndDate'] = str(qry.EndDate)
         data['Location'] = qry.Location
         data['FundingSource'] = qry.FundingSource
         data['TotalBudget'] = qry.TotalBudget
@@ -46,8 +47,8 @@ class GetProjectByCode(Resource):
         data = dict()
         data['ProjectID'] = qry.ProjectID
         data['ProjectCode'] = qry.ProjectCode
-        data['StartDate'] = qry.StartDate
-        data['EndDate'] = qry.EndDate
+        data['StartDate'] = str(qry.StartDate)
+        data['EndDate'] = str(qry.EndDate)
         data['Location'] = qry.Location
         data['FundingSource'] = qry.FundingSource
         data['TotalBudget'] = qry.TotalBudget

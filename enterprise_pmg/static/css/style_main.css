@@ -626,12 +626,14 @@ ul.warehouse{
 .cards-container{
   width: 50%;
   margin-left: 10%;
+  margin-top: 50px;
 }
 
 .card{
-  width: 70%;
+  width: 100%;
   background-color: #eee; /* Grey background color */
   margin-left: 15%;
+  margin-top: 15px;
   padding: 15px;
   box-shadow: 5px 10px 20px rgb(190, 190, 190);
 }

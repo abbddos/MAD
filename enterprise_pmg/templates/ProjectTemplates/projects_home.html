@@ -8,7 +8,7 @@
   {% for proj in projs.items %}
   <div class = 'card'>
     <header>
-      <h3>Project Code</h3>
+      <h3>{{proj.ProjectCode}}</h3>
     </header>
     <div class = 'card-content'>
       <table class = 'card-info'>
@@ -26,14 +26,14 @@
         </tr>
         <tr>
           <td class = 'card-info-title'><p>Managers:</p></td>
-          <td><p>{% for m in proj.ProjectManagers%} m, {% endfor %}</p></td>
+          <td><p>{% for m in proj.ProjectManagers%} {{m}}, {% endfor %}</p></td>
         </tr>
         <tr>
           <td class = 'card-info-title'><p>Description:</p></td>
-          <td><p>Some description</p></td>
+          <td><p>{{proj.Description}}</p></td>
         </tr>
         <tr>
-          <td style = 'margin-top: 20px;'><a href = "#" style = 'text-decoration: none;'>View.. <img src = "{{url_for('static', filename = 'images/view.png')}}" style = 'height: 25px; width 25px;' /> </a></td>
+          <td style = 'margin-top: 20px;'><a href = "#" style = 'text-decoration: none;' id = '{{proj.ProjectCode}}' class ='view'>View.. <img src = "{{url_for('static', filename = 'images/view.png')}}" style = 'height: 25px; width: 25px;' /> </a></td>
           <td style = 'margin-top: 20px;'><a href = "#" style = 'text-decoration: none;'>Go..<img src = "{{url_for('static', filename = 'images/go.png')}}" style = 'height: 25px; width: 25px;'/> </a></td>
         </tr>
       </table>
@@ -53,6 +53,17 @@
       {% endif %}
     {% endfor %}
   </div>
+  <div class = 'flashes'>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class = "{{category}}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </div>
   </div>
 </div>
 <script src = "{{url_for('static', filename = 'js/jquery/jQuery-Tags-Input-master/src/jquery.tagsinput.js')}}"></script>
@@ -60,7 +71,7 @@
 
 <div id="myModal" class="modal">
   <div class="modal-content" style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
-      <form method = 'POST' action = "{{url_for('admin.CreateNewUser')}}" style = 'width:100%;' id = 'CreateUserForm'>
+      <form method = 'POST' action = "{{url_for('projects.CreateProject')}}" style = 'width:100%;' id = 'CreateProjectForm'>
           <h3>Create New User <span class="close">&times;</span></h3>
           <div class = 'fields'>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -85,13 +96,55 @@
                 <label>StakeHolder(s):</label>
               </div>
               <div class = 'col-b'>
-                <span style = 'float: left; margin-left: 450px;' class = 'search'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
+                <span style = 'float: left; margin-left: 450px;' class = 'search' id = 'search-stakeholders'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
                 {{form.StakeHolders}}
               </div>
             </div>
             {{render_field(form.Description)}}
+          </div>
           <div class = 'submission'>
             {{form.submit(class = 'btn-active')}}
+          </div>
+        </form>
+  </div>
+</div>
+
+<div id="myModal_1" class="modal">
+  <div class="modal-content" style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
+      <form method = 'POST'  style = 'width:100%;' id = 'EditProjectForm'>
+          <h3><span id = 'projcode'></span><span class="close">&times;</span></h3>
+          <div class = 'fields'>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type = "hidden" id = 'this-uname' value = "{{username}}" />
+            {{render_field(form.ProjectStartDate, id = 'ProjectStartDate_Edit')}}
+            {{render_field(form.ProjectEndDate, id = 'ProjectEndDate_Edit')}}
+            {{render_field(form.Location, id = 'Location_Edit')}}
+            {{render_field(form.FundingSource, id = 'FundingSource_Edit')}}
+            {{render_field(form.TotalBudget, id = 'TotalBudget_Edit')}}
+            {{render_field(form.Currency, id = 'Currency_Edit')}}
+            <div class = 'row'>
+              <div class = 'col-a'>
+                <label>Project Manager(s): <label style = 'color: red;'>*</label></label>
+              </div>
+              <div class = 'col-b'>
+                <span style = 'float: left; margin-left: 400px;' class = 'search' id = 'search-managers'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
+                {{form.Managers(id = 'Managers_Edit')}}
+              </div>
+            </div>
+            <div class = 'row'>
+              <div class = 'col-a'>
+                <label>StakeHolder(s):</label>
+              </div>
+              <div class = 'col-b'>
+                <span style = 'float: left; margin-left: 450px;' class = 'search' id = 'search-stakeholders'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
+                {{form.StakeHolders(id = 'StakeHolders_Edit')}}
+              </div>
+            </div>
+            {{render_field(form.Description, id = 'Description_Edit')}}
+            {{render_field(form.Log, id = 'Log_Edit')}}
+          </div>
+          <div class = 'submission'>
+            {{form.submit(class = 'btn-active', id = 'submit_Edit')}}
           </div>
         </form>
   </div>
@@ -122,31 +175,139 @@
   </div>
   </div>
 
+  <div id="Stakeholders-Table" class="modal">
+    <div class="modal-content">
+      
+      <h3>Search Managers <span class="closer" id = 'close-stakeholders-table'>&times;</span></h3>
+      <div class = 'items' stye = 'overflow: scroll;'>
+        <input type = 'text' style = 'border: solid rgb(0,0,100); border-width: 1px; border-radius: 3px; margin: 5px; float: left; box-shadow: 1px 1px 2px rgb(200,200,200);' placeholder = 'Search' id = 'srch-itm' />
+        <table>
+          <tr>
+            
+            <th>Stakeholder's Name: </th>
+          </tr>
+          {% for s in shs.items %}
+          
+            <tr class = 'table-row-itm'>
+              <td><a class = 'stk' href = '#'>{{s.SHName}}</a></td>
+              
+            </tr>
+            
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+    </div>
+
 <script>
   $(document).ready(function(){
+
+    var managers = [];
+    var stholders = []
+    var uname = $('#this-uname').val();
+
     $('#add-project').click(function(){
         $('#myModal').show();
+    });
+
+    $('.view').on('click', function(){
+      $('#Managers_Edit').tagsInput();
+      $('#StakeHolders_Edit').tagsInput();
+      var pid = $(this).attr('id');
+      $('#myModal_1').show();
+      $.getJSON('/API/Projects/GetProjectByCode/' + $(this).attr('id'), function(data){
+        $('#projcode').text(data.ProjectCode);
+        $('#ProjectStartDate_Edit').val(data.StartDate);
+        $('#ProjectEndDate_Edit').val(data.EndDate);
+        $('#Location_Edit').val(data.Location);
+        $('#FundingSource_Edit').val(data.FundingSource);
+        $('#TotalBudget_Edit').val(data.TotalBudget);
+        $('#Currency_Edit').val(data.Currency);
+        $('#Description_Edit').val(data.Description);
+        $('#Log_Edit').val(data.Log);
+        $.each(data.ProjectManagers, function(key, val){
+          $('#Managers_Edit').addTag(val);
+          managers.push(val);
+        });
+        $.each(data.StakeHolders, function(key, val){
+          $('#StakeHolders_Edit').addTag(val);
+          stholders.push(val);
+        });
+
+        if(jQuery.inArray(uname, managers) == -1){
+        $('#ProjectStartDate_Edit').prop('disabled', true);
+        $('#ProjectEndDate_Edit').prop('disabled', true);
+        $('#Location_Edit').prop('disabled', true);
+        $('#FundingSource_Edit').prop('disabled', true);
+        $('#TotalBudget_Edit').prop('disabled', true);
+        $('#Currency_Edit').prop('disabled', true);
+        $('#Description_Edit').prop('disabled', true);
+        $('#Log_Edit').prop('disabled', true);
+        $('#submit_Edit').prop('disabled', true);
+        }
+
+        else{
+          $('#ProjectStartDate_Edit').prop('disabled', false);
+        $('#ProjectEndDate_Edit').prop('disabled', false);
+        $('#Location_Edit').prop('disabled', false);
+        $('#FundingSource_Edit').prop('disabled', false);
+        $('#TotalBudget_Edit').prop('disabled', false);
+        $('#Currency_Edit').prop('disabled', false);
+        $('#Description_Edit').prop('disabled', false);
+        $('#Log_Edit').prop('disabled', false);
+        $('#submit_Edit').prop('disabled', false);
+        }
+
+      });
+      
+      $('#EditProjectForm').attr('action', "/projects/UpdateProject/" + pid);
     });
 
     $('#search-managers').click(function(){
         $('#Managers-Table').show();
     });
 
+    $('#search-stakeholders').click(function(){
+      $('#Stakeholders-Table').show();
+    });
+
     $('#close-managers-table').click(function(){
       $('#Managers-Table').hide();
     });
+
+    $('#close-stakeholders-table').click(function(){
+      $('#Stakeholders-Table').hide();
+    });
+
     $('.close').click(function(){
+        $.each(managers, function(k, v){
+          $('#Managers_Edit').removeTag(v);
+        });
+        $.each(stholders, function(k, v){
+          $('#StakeHolders_Edit').removeTag(v);
+        });
+        managers = [];
+        stholders = [];
         $('.modal').hide();
     });
+
+
 });
 </script>
 <script>
   $(document).ready(function(){
+
     $('#Managers').tagsInput();
     $('#StakeHolders').tagsInput();
+
     $('.itm').click(function(){
       $('#Managers').addTag($(this).text());
       $('#Managers-Table').hide();
+    });
+
+    $('.stk').click(function(){
+      $('#StakeHolders').addTag($(this).text());
+      $('#Stakeholders-Table').hide();
     });
   });
 </script>
