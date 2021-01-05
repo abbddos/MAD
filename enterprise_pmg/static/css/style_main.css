@@ -6,12 +6,12 @@ body{
 }
 
 .home-image{
-  width: 30%; 
-  height: 60%; 
-  margin-left: 33%; 
+  width: 50%; 
+  height: 70%; 
+  margin-left: 22%; 
   margin-top: 5%; 
-  border-radius: 300px; 
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  
+  
 }
 .main-nav{
   background-color: rgb(0,0,100);
@@ -526,8 +526,14 @@ tr:nth-child(even):hover{
   cursor: pointer;
 }
 
-.search:hover,
-.search:focus {
+.search-managers:hover,
+.search-managers:focus {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.search-stakeholders:hover,
+.search-stakeholders:focus {
     text-decoration: none;
     cursor: pointer;
 }

@@ -38,7 +38,7 @@ def CreateProject():
                                                 request.form['TotalBudget'],
                                                 request.form['Currency'],
                                                 managers, stakeholders,
-                                                request.form['Description'], '')
+                                                request.form['Description'], request.form['Log'])
                 flash('New project was successfully created...', category = 'success')
                 return redirect(url_for('projects.projects'))
             except Exception as e:

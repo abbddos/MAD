@@ -72,7 +72,7 @@
 <div id="myModal" class="modal">
   <div class="modal-content" style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
       <form method = 'POST' action = "{{url_for('projects.CreateProject')}}" style = 'width:100%;' id = 'CreateProjectForm'>
-          <h3>Create New User <span class="close">&times;</span></h3>
+          <h3>Create New Project <span class="close">&times;</span></h3>
           <div class = 'fields'>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             {{render_field(form.ProjectCode)}}
@@ -87,7 +87,7 @@
                 <label>Project Manager(s): <label style = 'color: red;'>*</label></label>
               </div>
               <div class = 'col-b'>
-                <span style = 'float: left; margin-left: 400px;' class = 'search' id = 'search-managers'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
+                <span style = 'float: left; margin-left: 400px;' class = 'search-managers' id = 'search-managers'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
                 {{form.Managers}}
               </div>
             </div>
@@ -96,11 +96,12 @@
                 <label>StakeHolder(s):</label>
               </div>
               <div class = 'col-b'>
-                <span style = 'float: left; margin-left: 450px;' class = 'search' id = 'search-stakeholders'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
+                <span style = 'float: left; margin-left: 450px;' class = 'search-stakeholders' id = 'search-stakeholders'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
                 {{form.StakeHolders}}
               </div>
             </div>
             {{render_field(form.Description)}}
+            {{render_field(form.Log)}}
           </div>
           <div class = 'submission'>
             {{form.submit(class = 'btn-active')}}
@@ -127,7 +128,7 @@
                 <label>Project Manager(s): <label style = 'color: red;'>*</label></label>
               </div>
               <div class = 'col-b'>
-                <span style = 'float: left; margin-left: 400px;' class = 'search' id = 'search-managers'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
+                <span style = 'float: left; margin-left: 400px;' class = 'search-managers' id = 'search-managers'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
                 {{form.Managers(id = 'Managers_Edit')}}
               </div>
             </div>
@@ -136,7 +137,7 @@
                 <label>StakeHolder(s):</label>
               </div>
               <div class = 'col-b'>
-                <span style = 'float: left; margin-left: 450px;' class = 'search' id = 'search-stakeholders'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
+                <span style = 'float: left; margin-left: 450px;' class = 'search-stakeholders' id = 'search-stakeholders'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
                 {{form.StakeHolders(id = 'StakeHolders_Edit')}}
               </div>
             </div>
@@ -163,7 +164,7 @@
           <th>Manager's Name: </th>
         </tr>
         {% for u in users.items %}
-        {% if u.UserName != 'admin'%}
+        {% if u.UserName != 'admin' and u.Status == 'Active' %}
           <tr class = 'table-row-itm'>
             <td><a class = 'itm' href = '#'>{{u.UserName}}</a></td>
             <td>{{u.FirstName}} {{u.LastName}}</td>
@@ -187,12 +188,11 @@
             <th>Stakeholder's Name: </th>
           </tr>
           {% for s in shs.items %}
-          
+            {% if s.SHStatus == 'Active' %}
             <tr class = 'table-row-itm'>
               <td><a class = 'stk' href = '#'>{{s.SHName}}</a></td>
-              
             </tr>
-            
+            {% endif %}
           {% endfor %}
         </table>
       </div>
@@ -202,15 +202,20 @@
 <script>
   $(document).ready(function(){
 
+    var create_view_switch = 0;
     var managers = [];
     var stholders = []
     var uname = $('#this-uname').val();
 
     $('#add-project').click(function(){
+        create_view_switch = 0;
+        $('#Managers').tagsInput();
+        $('#StakeHolders').tagsInput();
         $('#myModal').show();
     });
 
     $('.view').on('click', function(){
+      create_view_switch = 1;
       $('#Managers_Edit').tagsInput();
       $('#StakeHolders_Edit').tagsInput();
       var pid = $(this).attr('id');
@@ -263,11 +268,11 @@
       $('#EditProjectForm').attr('action', "/projects/UpdateProject/" + pid);
     });
 
-    $('#search-managers').click(function(){
+    $('.search-managers').click(function(){
         $('#Managers-Table').show();
     });
 
-    $('#search-stakeholders').click(function(){
+    $('.search-stakeholders').click(function(){
       $('#Stakeholders-Table').show();
     });
 
@@ -291,25 +296,30 @@
         $('.modal').hide();
     });
 
-
-});
-</script>
-<script>
-  $(document).ready(function(){
-
-    $('#Managers').tagsInput();
-    $('#StakeHolders').tagsInput();
-
     $('.itm').click(function(){
-      $('#Managers').addTag($(this).text());
-      $('#Managers-Table').hide();
+      if(create_view_switch == 0){
+        $('#Managers').addTag($(this).text());
+        $('#Managers-Table').hide();
+      }
+      else{
+        $('#Managers_Edit').addTag($(this).text());
+        $('#Managers-Table').hide();
+      }
+      
     });
 
     $('.stk').click(function(){
-      $('#StakeHolders').addTag($(this).text());
-      $('#Stakeholders-Table').hide();
+      if(create_view_switch == 0){
+        $('#StakeHolders').addTag($(this).text());
+        $('#Stakeholders-Table').hide();
+      }
+      else{
+        $('#StakeHolders_Edit').addTag($(this).text());
+        $('#Stakeholders-Table').hide();
+      }
+      
     });
-  });
+});
 </script>
 
 {% endblock %}
