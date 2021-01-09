@@ -15,6 +15,10 @@ $(document).ready(function(){
       search_srv($(this).val());
     });
 
+    $('#srch-proj').keyup(function(){
+      search_proj($(this).val());
+    });
+
     function search_table(value){
       $('.table-row').each(function(){
         
@@ -47,6 +51,16 @@ $(document).ready(function(){
 
     function search_srv(value){
       $('.table-row-srv').each(function(){
+        
+        $(this).each(function(){
+          if($(this).text().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) >= 0){ $(this).show();}
+          else{$(this).hide();}
+        });
+      });
+    }
+
+    function search_proj(value){
+      $('.card').each(function(){
         
         $(this).each(function(){
           if($(this).text().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) >= 0){ $(this).show();}
