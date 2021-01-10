@@ -1,7 +1,7 @@
 from flask import *
 from flask_mail import *
 from enterprise_pmg import app, mail
-from enterprise_pmg.model import Project, Admin
+from enterprise_pmg.model import Projects, Admin
 from enterprise_pmg.Forms import ProjectForms
 import os
 from werkzeug.utils import secure_filename
@@ -10,15 +10,36 @@ from PIL import Image
 
 mod = Blueprint('projects', __name__, url_prefix = '/projects')
 
+def CheckManagers(ManagersList):
+    allunames = Admin.Users.GetAllUserNames()
+    for m in ManagersList:
+        if m not in allunames:
+            return '{} is not included as a user'.format(m)
+            break
+    return None
+
+def CheckStakeHolders(stakeholderslist):
+    allnames = Admin.StakeHolder.GetStakeHoldersList()
+    for s in stakeholderslist:
+        if s not in allnames:
+            return 'Stakeholder {} is not identified.'.format(s)
+            break
+    return None
+
+    
 @mod.route('/')
 def projects():
-    projs = Project.Project.GetAllProjects()
+    return redirect(url_for('projects.allprojects'))
+
+@mod.route('/allprojects', methods = ['Get','POST'])
+def allprojects():
+    projs = Projects.Project.GetAllProjects()
     form = ProjectForms.ProjectForm(request.form)
-    users = Admin.Users.GetAllUsers()
-    shs = Admin.StakeHolder.GetAllStakeHolders()
+    users = Admin.Users.SELECT_ALL()
+    shs = Admin.StakeHolder.GET_ALL_STAKEHOLDERS()
     return render_template('ProjectTemplates/projects_home.html', username = session['username'], role = session['role'], image_file = session['ProPic'],
                             form = form,
-                            projs = projs,
+                            allprojects = projs,
                             users = users,
                             shs = shs)
 
@@ -30,7 +51,16 @@ def CreateProject():
             try:
                 managers = request.form['Managers'].split(',')
                 stakeholders = request.form['StakeHolders'].split(',')
-                NewProject = Project.Project(request.form['ProjectCode'],
+                mancheck = CheckManagers(managers)
+                shcheck = CheckStakeHolders(stakeholders)
+                if mancheck:
+                    flash(mancheck, category = 'fail')
+                    return redirect(url_for('projects.allprojects'))
+                elif shcheck:
+                    flash(shcheck, category = 'fail')
+                    return redirect(url_for('projects.allprojects'))
+                else:
+                    NewProject = Projects.Project(request.form['ProjectCode'],
                                                 request.form['ProjectStartDate'], 
                                                 request.form['ProjectEndDate'], 
                                                 request.form['Location'],
@@ -39,12 +69,12 @@ def CreateProject():
                                                 request.form['Currency'],
                                                 managers, stakeholders,
                                                 request.form['Description'], request.form['Log'])
-                flash('New project was successfully created...', category = 'success')
-                return redirect(url_for('projects.projects'))
+                    flash('New project was successfully created...', category = 'success')
+                    return redirect(url_for('projects.allprojects'))
             except Exception as e:
                 flash(str(e), category = 'fail')
-                return redirect(url_for('projects.projects'))
-    return redirect(url_for('projects.projects'))
+                return redirect(url_for('projects.allprojects'))
+    return redirect(url_for('projects.allprojects'))
 
 @mod.route('/UpdateProject/<code>', methods = ['GET','POST'])
 def UpdateProject(code):
@@ -54,11 +84,20 @@ def UpdateProject(code):
             try:
                 if request.form['Managers'] == None or request.form['ProjectStartDate'] == None or request.form['ProjectEndDate'] == None:
                     flash('Missing required values, please recheck...', category = 'fail')
-                    return redirect(url_for('projects.projects'))
+                    return redirect(url_for('projects.allprojects'))
                 else:
                     managers = request.form['Managers'].split(',')
                     stakeholders = request.form['StakeHolders'].split(',')
-                    Project.Project.UpdateProjectByCode(code,
+                    mancheck = CheckManagers(managers)
+                    shcheck = CheckStakeHolders(stakeholders)
+                    if mancheck:
+                        flash(mancheck, category = 'fail')
+                        return redirect(url_for('projects.allprojects'))
+                    elif shcheck:
+                        flash(shcheck, category = 'fail')
+                        return redirect(url_for('projects.allprojects'))
+                    else:
+                        Projects.Project.UpdateProjectByCode(code,
                                                 request.form['ProjectStartDate'],
                                                 request.form['ProjectEndDate'],
                                                 request.form['Location'],
@@ -68,10 +107,10 @@ def UpdateProject(code):
                                                 managers, stakeholders,
                                                 request.form['Description'],
                                                 request.form['Log'])
-                    flash('Project {} was successfully updated'.format(code), category = 'success')
-                    return redirect(url_for('projects.projects'))
+                        flash('Project {} was successfully updated'.format(code), category = 'success')
+                        return redirect(url_for('projects.allprojects'))
             except Exception as e:
                 flash(str(e), category = 'fail')
-                return redirect(url_for('projects.projects'))
-    return redirect(url_for('projects.projects'))
+                return redirect(url_for('projects.allprojects'))
+    return redirect(url_for('projects.allprojects'))
 

@@ -30,8 +30,12 @@ class Project(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def GET_ALL_PROJECTS():
+        qrys = Project.query.order_by(Project.ProjectID.desc()).all()
+        return qrys 
+
     def GetAllProjects():
-        qrys = Project.query.order_by(Project.ProjectID).paginate()
+        qrys = Project.query.order_by(Project.ProjectID.desc()).paginate(per_page = 5)
         return qrys 
 
     def GetProjectByID(pid):

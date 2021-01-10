@@ -5,7 +5,18 @@
   <button id = 'add-project' class = 'btn-active' style = 'float: left; width: 150px;'>Create New Project</button>
   <input type = 'text' style = 'border: solid rgb(0,0,100); border-width: 1px; border-radius: 3px; margin: 5px; float: left;box-shadow: 1px 1px 2px rgb(200,200,200);' placeholder = 'Search' id = 'srch-proj' />
   <div class = 'cards-container'>
-  {% for proj in projs.items %}
+    <div class = 'flashes'>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              {% for category, message in messages %}
+                  <div class = "{{category}}">
+                      <p>{{ message }}</p>
+                  </div>
+              {% endfor %}
+          {% endif %}
+      {% endwith %}
+    </div>
+  {% for proj in allprojects.items %}
   <div class = 'card'>
     <header>
       <h3>{{proj.ProjectCode}}</h3>
@@ -40,30 +51,19 @@
     </div>
   </div>
   {% endfor %}
-  <div class = 'paginator' style = 'margin-top: 20px;'>
-    {% for page_num in projs.iter_pages(left_edge = 1, right_edge = 1, left_current = 1, right_current = 2) %}
-      {% if page_num %}
-        {% if projs.page == page_num %}
-          <a href = "{{url_for('projects.projects', page = page_num)}}" class = 'pg-inline'>{{page_num}}</a>
-        {% else %}
-          <a href = "{{url_for('projects.projects', page = page_num)}}" class = 'pg-outline'>{{page_num}}</a>
-        {% endif %}
-      {% else %}
-        ...
-      {% endif %}
-    {% endfor %}
   </div>
-  <div class = 'flashes'>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class = "{{category}}">
-                    <p>{{ message }}</p>
-                </div>
-            {% endfor %}
+  <div class = 'paginator' style = 'margin-top: 20px;'>
+    {% for page_num in allprojects.iter_pages(left_edge = 1, right_edge = 1, left_current = 1, right_current = 2) %}
+        {% if page_num %}
+          {% if allprojects.page == page_num %}
+            <a href = "{{url_for('projects.allprojects', page = page_num)}}" class = 'pg-inline'>{{page_num}}</a>
+          {% else %}
+            <a href = "{{url_for('projects.allprojects', page = page_num)}}" class = 'pg-outline'>{{page_num}}</a>
+          {% endif %}
+        {% else %}
+          ...
         {% endif %}
-    {% endwith %}
-    </div>
+      {% endfor %}
   </div>
 </div>
 <script src = "{{url_for('static', filename = 'js/jquery/jQuery-Tags-Input-master/src/jquery.tagsinput.js')}}"></script>
@@ -163,7 +163,7 @@
           <th>Manager's UserName: </th>
           <th>Manager's Name: </th>
         </tr>
-        {% for u in users.items %}
+        {% for u in users %}
         {% if u.UserName != 'admin' and u.Status == 'Active' %}
           <tr class = 'table-row-itm'>
             <td><a class = 'itm' href = '#'>{{u.UserName}}</a></td>
@@ -187,7 +187,7 @@
             
             <th>Stakeholder's Name: </th>
           </tr>
-          {% for s in shs.items %}
+          {% for s in shs %}
             {% if s.SHStatus == 'Active' %}
             <tr class = 'table-row-itm'>
               <td><a class = 'stk' href = '#'>{{s.SHName}}</a></td>

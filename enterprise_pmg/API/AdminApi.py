@@ -5,9 +5,9 @@ from enterprise_pmg.model import Admin
 
 class GetAllUsers(Resource):
     def get(self):
-        qrys = Admin.Users.GetAllUsers()
+        qrys = Admin.Users.SELECT_ALL()
         data1 = []
-        for qry in qrys.items:
+        for qry in qrys:
             data = {}
             data['UserId'] = qry.UserId
             data['FirstName'] = qry.FirstName
@@ -75,9 +75,9 @@ class GetCompanyByID(Resource):
 
 class GetAllStakeHolders(Resource):
     def get(self):
-        qrys = Admin.StakeHolder.GetAllStakeHolders()
+        qrys = Admin.StakeHolder.GET_ALL_STAKEHOLDERS()
         data1 = []
-        for qry in qrys.items:
+        for qry in qrys:
             data = {}
             data['SHID'] = qry.SHID
             data['SHName'] = qry.SHName

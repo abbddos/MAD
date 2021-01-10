@@ -1,17 +1,17 @@
 from flask_restful import Api, Resource
 from datetime import datetime, date
-from enterprise_pmg.model import Project, Admin
+from enterprise_pmg.model import Projects, Admin
 
 class GetAllProjects(Resource):
     def get(self):
-        qrys = Project.Project.GetAllProjects()
+        qrys = Projects.Project.GET_ALL_PROJECTS()
         data1 = []
-        for qry in qrys.items:
+        for qry in qrys:
             data = dict()
             data['ProjectID'] = qry.ProjectID
             data['ProjectCode'] = qry.ProjectCode
-            data['StartDate'] = qry.StartDate
-            data['EndDate'] = qry.EndDate
+            data['StartDate'] = str(qry.StartDate)
+            data['EndDate'] = str(qry.EndDate)
             data['Location'] = qry.Location
             data['FundingSource'] = qry.FundingSource
             data['TotalBudget'] = qry.TotalBudget
@@ -25,7 +25,7 @@ class GetAllProjects(Resource):
 
 class GetProjectByID(Resource):
     def get(self,pid):
-        qry = Project.Project.GetProjectByID(pid)
+        qry = Projects.Project.GetProjectByID(pid)
         data = dict()
         data['ProjectID'] = qry.ProjectID
         data['ProjectCode'] = qry.ProjectCode
@@ -43,7 +43,7 @@ class GetProjectByID(Resource):
 
 class GetProjectByCode(Resource):
     def get(self,code):
-        qry = Project.Project.GetProjectByCode(code)
+        qry = Projects.Project.GetProjectByCode(code)
         data = dict()
         data['ProjectID'] = qry.ProjectID
         data['ProjectCode'] = qry.ProjectCode

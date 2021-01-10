@@ -46,6 +46,13 @@ class Users(db.Model):
         qry = Users.query.filter_by(UserName = uname).first()
         propic = qry.ProfilePic
         return propic
+
+    def GetAllUserNames():
+        allunames = []
+        unames = db.session.query(Users.UserName)
+        for i in unames:
+            allunames.append(i[0])
+        return allunames
         
     # createusername function allows for creating a unique username,...
     # it takes the first character from the users' firstname and the...
@@ -76,7 +83,7 @@ class Users(db.Model):
         return pswd, hashpass
 
     def SELECT_ALL():
-        return Users.query.paginate()
+        return Users.query.order_by(Users.FirstName).all()
 
     def SELECT_ONE_USER(username):
         return Users.query.filter_by(UserName = username).first()
@@ -228,6 +235,10 @@ class StakeHolder(db.Model):
         qrys = StakeHolder.query.order_by(StakeHolder.SHID).paginate()
         return qrys 
 
+    def GET_ALL_STAKEHOLDERS():
+        qrys = StakeHolder.query.order_by(StakeHolder.SHID).all()
+        return qrys
+
     def GetStakeHolderByID(sid):
         qry = StakeHolder.query.filter_by(SHID = sid).first()
         return qry
@@ -246,3 +257,10 @@ class StakeHolder(db.Model):
         SH.SHStatus = sstatus
         SH.SHDescription = sdescription
         db.session.commit()
+
+    def GetStakeHoldersList():
+        sholders = []
+        allholders = db.session.query(StakeHolder.SHName)
+        for h in allholders:
+            sholders.append(h[0])
+        return sholders
