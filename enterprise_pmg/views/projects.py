@@ -26,6 +26,11 @@ def CheckStakeHolders(stakeholderslist):
             break
     return None
 
+def CreateProjectDirectory(code):
+    os.mkdir(app.root_path + "/static/projects/{}".format(code))
+    os.mkdir(app.root_path + "/static/projects/{}/documents".format(code))
+    os.mkdir(app.root_path + "/static/projects/{}/images".format(code))
+
     
 @mod.route('/')
 def projects():
@@ -69,6 +74,7 @@ def CreateProject():
                                                 request.form['Currency'],
                                                 managers, stakeholders,
                                                 request.form['Description'], request.form['Log'])
+                    CreateProjectDirectory(request.form['ProjectCode'])
                     flash('New project was successfully created...', category = 'success')
                     return redirect(url_for('projects.allprojects'))
             except Exception as e:
