@@ -120,3 +120,7 @@ def UpdateProject(code):
                 return redirect(url_for('projects.allprojects'))
     return redirect(url_for('projects.allprojects'))
 
+@mod.route('/project/<code>', methods = ['GET','POST'])
+def project(code):
+    return render_template('ProjectTemplates/project.html', username = session['username'], role = session['role'], image_file = session['ProPic'], code = code)
+

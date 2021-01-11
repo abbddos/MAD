@@ -131,6 +131,7 @@ li.dropdown {
   display: block; /* Make the links appear below each other */
   padding: 12px; /* Add some padding */
   text-decoration: none; /* Remove underline from links */
+  transition: 0.3s;
 }
 
 .mainpage{
@@ -425,8 +426,6 @@ tr:nth-child(even):hover{
 .ui-tabs .ui-tabs-nav{
   background-color: 000066;
   overflow: auto;
-
-
 }
 
 .ui-tabs .ui-tabs-nav ul{
@@ -452,16 +451,16 @@ tr:nth-child(even):hover{
 }
 
 .ui-tabs .ui-tabs-nav li a:hover{
-  background-color: black;
-  color: white;
+  background-color: white;
+  color: black;
   font-style: normal;
   text-decoration: none;
   display: block;
 }
 
 .ui-tabs .ui-tabs-nav li.ui-tabs-active a{
-  background-color: white;
-  color: 000066;
+  background-color: black;
+  color: white;
   font-style: normal;
   text-decoration: none;
   display: block;

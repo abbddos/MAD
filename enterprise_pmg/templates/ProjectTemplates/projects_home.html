@@ -45,7 +45,7 @@
         </tr>
         <tr>
           <td style = 'margin-top: 20px;'><a href = "#" style = 'text-decoration: none;' id = '{{proj.ProjectCode}}' class ='view'>View.. <img src = "{{url_for('static', filename = 'images/view.png')}}" style = 'height: 25px; width: 25px;' /> </a></td>
-          <td style = 'margin-top: 20px;'><a href = "#" style = 'text-decoration: none;'>Go..<img src = "{{url_for('static', filename = 'images/go.png')}}" style = 'height: 25px; width: 25px;'/> </a></td>
+          <td style = 'margin-top: 20px;'><a href = "{{url_for('projects.project', code = proj.ProjectCode)}}" style = 'text-decoration: none;'>Go..<img src = "{{url_for('static', filename = 'images/go.png')}}" style = 'height: 25px; width: 25px;'/> </a></td>
         </tr>
       </table>
     </div>
