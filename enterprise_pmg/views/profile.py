@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 
 mod = Blueprint('profile', __name__, url_prefix = '/profile')
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 def allowed_file(filename):

@@ -10,6 +10,15 @@ from PIL import Image
 
 mod = Blueprint('projects', __name__, url_prefix = '/projects')
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def allowed_document(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS
+
 def CheckManagers(ManagersList):
     allunames = Admin.Users.GetAllUserNames()
     for m in ManagersList:
@@ -25,6 +34,13 @@ def CheckStakeHolders(stakeholderslist):
             return 'Stakeholder {} is not identified.'.format(s)
             break
     return None
+
+def GetProjectImages(code):
+    return os.listdir(app.root_path + "/static/projects/{}/images".format(code))
+
+def GetProjectDocs(code):
+    return os.listdir(app.root_path + "/static/projects/{}/documents".format(code))
+    
 
 def CreateProjectDirectory(code):
     os.mkdir(app.root_path + "/static/projects/{}".format(code))
@@ -122,5 +138,49 @@ def UpdateProject(code):
 
 @mod.route('/project/<code>', methods = ['GET','POST'])
 def project(code):
-    return render_template('ProjectTemplates/project.html', username = session['username'], role = session['role'], image_file = session['ProPic'], code = code)
+    imgs = GetProjectImages(code)
+    docs = GetProjectDocs(code)
+    return render_template('ProjectTemplates/project.html', username = session['username'], role = session['role'], image_file = session['ProPic'], code = code,
+    imgs = imgs, docs = docs)
+
+@mod.route('/uploadfiles/<code>', methods = ['Get','POST'])
+def UploadFiles(code):
+    if request.method == 'POST':
+        try:
+            files = request.files.getlist('file')
+            for file in files:
+                if file and allowed_document(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.root_path , 'static/projects/{}/documents'.format(code), filename))
+            return redirect(url_for('projects.project', code = code))
+        except Exception as e:
+            flash(str(e), category = 'fail')
+            return redirect(url_for('projects.project', code = code))
+    return redirect(url_for('projects.project', code = code))
+
+@mod.route('/removefile/<code>/<file>')
+def RemoveFile(code, file):
+    os.remove(app.root_path + '/static/projects/{}/documents/{}'.format(code, file))
+    return redirect(url_for('projects.project', code = code))
+
+@mod.route('/removeimage/<code>/<file>')
+def RemoveImage(code, file):
+    os.remove(app.root_path + '/static/projects/{}/images/{}'.format(code, file))
+    return redirect(url_for('projects.project', code = code))
+
+
+@mod.route('/uploadimages/<code>', methods = ['GET','POST'])
+def UploadImages(code):
+    if request.method == 'POST':
+        try:
+            files = request.files.getlist('file')
+            for file in files:
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.root_path , 'static/projects/{}/images'.format(code), filename))
+            return redirect(url_for('projects.project', code = code))
+        except Exception as e:
+            flash(str(e), category = 'fail')
+            return redirect(url_for('projects.project', code = code))
+    return redirect(url_for('projects.project', code = code))
 

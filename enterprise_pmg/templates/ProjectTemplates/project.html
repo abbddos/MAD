@@ -35,10 +35,34 @@
                 </ul>
               
                 <div id="tabs-1" class="tabcontent-1">
-                  <p>Here comes a list of documents</p>
+                  <div>
+                    <table style = 'margin: 10px; box-shadow: none; margin-bottom: 25px;'>
+                      {% for d in docs %}
+                        <tr>
+                          <td><a href = "{{url_for('static', filename = 'projects/{}/documents/{}'.format(code, d))}}"> <img src = "{{url_for('static', filename = 'images/report.png')}}" style = 'height: 25px; width: 25px; margin-right: 25px;'/>{{d}}</a></td>
+                          <td><a href = "{{url_for('projects.RemoveFile', code = code, file = d)}}"><img src = "{{url_for('static', filename = 'images/rmv.png')}}" style = 'height: 25px; width: 25px;'/></a></td>
+                        </tr>
+                      {% endfor %}
+                    </table>
+                  </div>
+                  <div id = 'files-uploads'>
+                    <form action="{{url_for('projects.UploadFiles', code = code)}}" class="dropzone" enctype="multipart/form-data">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    </form>
+                  </div>
                 </div>
                 <div id="tabs-2" class="tabcontent-1">
-                  <p>Here comes a gird if images</p>
+                  <div style = 'margin-top: 15px; margin-bottom: 25px; '>
+                    {% for i in imgs%}
+                      <a href = "{{url_for('static', filename = 'projects/{}/images/{}'.format(code, i))}}" class = 'img-container' id = '{{i}}'><img src = "{{url_for('static', filename = 'projects/{}/images/{}'.format(code, i))}}" class = 'img-directory'/></a>
+                      <span id = "rmv-{{i}}" ><a href = "{{url_for('projects.RemoveImage', code = code, file = i)}}"><img src = "{{url_for('static', filename = 'images/rmv.png')}}"  style = 'height: 25px; width: 25px; margin-left: -20px; background-color: rgb(150, 150, 150); border-radius: 40%; padding: 5px; box-shadow: 0px 2px 4px 0px rgba(177, 177, 177, 0.623); ' /></a></span>
+                    {% endfor %}
+                  </div>
+                  <div id = 'images-uploads'>
+                    <form action="{{url_for('projects.UploadImages', code = code)}}" class="dropzone" enctype="multipart/form-data">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    </form>
+                  </div>
                 </div>
               </div>
         </div>
@@ -128,6 +152,8 @@ document.getElementById("defaultOpen").click();
 <script>
     $(document).ready(function(){
         $('#mytabs').tabs();
+
+ 
     });
 </script>
 {% endblock %}
