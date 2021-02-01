@@ -88,10 +88,11 @@ class Tasks(db.Model):
     AssignedTo = db.Column(db.ARRAY(db.String(50)))
     DependsOn = db.Column(db.ARRAY(db.String))
     Dependabilities = db.Column(db.ARRAY(db.String))
+    Deliverables = db.Column(db.String)
     TaskStatus = db.Column(db.String(20))
     Comments = db.Column(db.Text)
     
-    def __init__(self, taskcode, projectcode, priority, desc, exstdate, exenddate, actstdate, actenddate, location, assigned, depon, dep, status, comments):
+    def __init__(self, taskcode, projectcode, priority, desc, exstdate, exenddate, actstdate, actenddate, location, assigned, depon, dep, deliverables, status, comments):
         self.TaskCode = taskcode
         self.project_code = projectcode
         self.Priority = priority
@@ -102,6 +103,7 @@ class Tasks(db.Model):
         self.ActualEndDate = actenddate
         self.TaskLocation = location
         self.AssignedTo = assigned
+        self.Deliverables = deliverables
         self.DependsOn = depon
         self.Dependabilities = dep
         self.TaskStatus = status
@@ -117,7 +119,7 @@ class Tasks(db.Model):
         qrys = Tasks.query.filter_by(project_code = procode, TaskCode = taskcode).first()
         return qrys 
 
-    def UpdateTask(procode, taskcode, priority, desc, exstdate, exenddate, actstdate, actenddate, location, assigned, depon, dep, status, comments):
+    def UpdateTask(procode, taskcode, priority, desc, exstdate, exenddate, actstdate, actenddate, location, assigned, deliverables, depon, dep, status, comments):
         qry = Tasks.query.filter_by(project_code = procode, TaskCode = taskcode).first()
         qry.TaskDescription = desc
         qry.ExpectedStartDate = exstdate
@@ -128,6 +130,7 @@ class Tasks(db.Model):
         qry.AssignedTo = assigned
         qry.DependsOn = depon
         qry.Dependabilities = dep
+        qry.Deliverables = deliverables
         qry.TaskStatus = status
         qry.Comments = comments
         db.session.commit()
