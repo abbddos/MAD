@@ -45,7 +45,7 @@
                       {% endfor %}
                     </table>
                   </div>
-                  <div id = 'files-uploads'>
+                  <div id = 'files-uploads' >
                     <form action="{{url_for('projects.UploadFiles', code = code)}}" class="dropzone" enctype="multipart/form-data">
                       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     </form>
