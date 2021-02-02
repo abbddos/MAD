@@ -59,3 +59,53 @@ class GetProjectByCode(Resource):
         data['Log'] = qry.Log
         return data
 
+class GetAllProjectTasks(Resource):
+    def get(self, procode):
+        qrys = Projects.Tasks.GetAllProjectTasks(procode)
+        data1 = []
+        for qry in qrys:
+            data = dict()
+            data['TaskID'] = qry.TaskID
+            data['TaskCode'] = qry.TaskCode
+            data['ProjectCode'] = qry.project_code
+            data['Priority'] = qry.Priority
+            data['TaskDescription'] = qry.TaskDescription
+            data['ExpectedStartDate'] = str(qry.ExpectedStartDate)
+            data['ExpectedEndDate'] = str(qry.ExpectedEndDate)
+            data['ActualStartDate'] = str(qry.ActualStartDate)
+            data['ActualEndDate'] = str(qry.ActualEndDate)
+            data['Location'] = qry.Location
+            data['AssignedTo'] = qry.AssignedTo
+            data['Deliverables'] = qry.Deliverables
+            data['DependsOn'] = qry.DependsOn
+            data['Dependability'] = qry.Dependabilities
+            data['TaskStatus'] = qry.TaskStatus
+            data['Comments'] = qry.Comments
+            data1.append(data)
+        return data1
+
+class GetTaskByCode(Resource):
+    def get(self, procode, taskcode):
+        qry = Projects.Tasks.GetTaskByCode(procode, taskcode)
+        data = dict()
+        data['TaskID'] = qry.TaskID
+        data['TaskCode'] = qry.TaskCode
+        data['ProjectCode'] = qry.project_code
+        data['Priority'] = qry.Priority
+        data['TaskDescription'] = qry.TaskDescription
+        data['ExpectedStartDate'] = str(qry.ExpectedStartDate)
+        data['ExpectedEndDate'] = str(qry.ExpectedEndDate)
+        data['ActualStartDate'] = str(qry.ActualStartDate)
+        data['ActualEndDate'] = str(qry.ActualEndDate)
+        data['Location'] = qry.Location
+        data['AssignedTo'] = qry.AssignedTo
+        data['Deliverables'] = qry.Deliverables
+        data['DependsOn'] = qry.DependsOn
+        data['Dependability'] = qry.Dependabilities
+        data['TaskStatus'] = qry.TaskStatus
+        data['Comments'] = qry.Comments
+        return data
+    
+           
+
+

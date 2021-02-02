@@ -60,6 +60,8 @@ api.add_resource(AdminApi.GetStakeHolderByID, '/API/Admin/GetStakeHolderByID/<si
 api.add_resource(ProjectApi.GetAllProjects, '/API/Projects/GetAllProjects')
 api.add_resource(ProjectApi.GetProjectByID, '/API/Projects/GetProjectByID/<pid>')
 api.add_resource(ProjectApi.GetProjectByCode, '/API/Projects/GetProjectByCode/<code>')
+api.add_resource(ProjectApi.GetAllProjectTasks, '/API/Projects/GetAllProjectTasks/<procode>')
+api.add_resource(ProjectApi.GetTaskByCode, '/API/Projects/GetTaskByCode/<procode>/<taskcode>')
 
 
 
