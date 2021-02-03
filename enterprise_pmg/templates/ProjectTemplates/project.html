@@ -18,6 +18,10 @@
       <div id="Tasks" class="tabcontent">
         <h3>Tasks</h3>
         <p>Here comes a list of tasks</p>
+        <form>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          {{render_field(TaskForm.DependsOn)}}
+        </form>
       </div>
       
       <div id="Budget" class="tabcontent">

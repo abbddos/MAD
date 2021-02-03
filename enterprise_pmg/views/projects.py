@@ -140,8 +140,10 @@ def UpdateProject(code):
 def project(code):
     imgs = GetProjectImages(code)
     docs = GetProjectDocs(code)
+    TaskForm = ProjectForms.TaskForm(request.form)
     return render_template('ProjectTemplates/project.html', username = session['username'], role = session['role'], image_file = session['ProPic'], code = code,
-    imgs = imgs, docs = docs)
+    imgs = imgs, docs = docs, 
+    TaskForm = TaskForm)
 
 @mod.route('/uploadfiles/<code>', methods = ['Get','POST'])
 def UploadFiles(code):
