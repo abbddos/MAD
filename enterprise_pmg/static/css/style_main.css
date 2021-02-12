@@ -601,13 +601,14 @@ ul.warehouse{
 }
 
 .select-what{
-  float: left;
-  background-color: rgb(0,0,100);
-  color: white;
-  font-weight: bold;
-  border: solid;
+  float: right;
+  width: 75%;
+  background-color: white;
+  text-align: left;
+  color: black;
+  border: solid 1px;
   border-color: rgb(0,0,100);
-  border-radius: 3px;
+  border-radius: 1px;
   box-shadow: 5px 10px 20px rgb(39, 39, 39);
   display: none;
 }

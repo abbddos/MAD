@@ -1,6 +1,8 @@
 {% extends 'LoginTemplates/layout.html'%}
 {% from 'renderfield.html' import render_field %}
 {% block content%}
+<script src = "{{url_for('static', filename = 'js/jquery/jQuery-Tags-Input-master/src/jquery.tagsinput.js')}}"></script>
+<link rel = 'stylesheet' type = 'text/css' href = "{{url_for('static', filename = 'js/jquery/jQuery-Tags-Input-master/src/jquery.tagsinput.css')}}" /> 
 <div class = 'actionpage' style = 'float: left; margin: 0px; padding: 0px;'>
     <div class="tab">
         <h3>{{code}}</h3>
@@ -17,11 +19,8 @@
       
       <div id="Tasks" class="tabcontent">
         <h3>Tasks</h3>
-        <p>Here comes a list of tasks</p>
-        <form>
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-          {{render_field(TaskForm.DependsOn)}}
-        </form>
+        <button id = 'add-task' class = 'btn-active' style = 'float: left; width: 150px;'>Create New Task</button>
+        <input type = 'text' style = 'border: solid rgb(0,0,100); border-width: 1px; border-radius: 3px; margin: 5px; float: left;box-shadow: 1px 1px 2px rgb(200,200,200);' placeholder = 'Search' id = 'srch' /> 
       </div>
       
       <div id="Budget" class="tabcontent">
@@ -71,6 +70,58 @@
               </div>
         </div>
       </div> 
+</div>
+
+<div id = 'create-task-modal' class = 'modal'>
+  <div class = 'modal-content' style = 'background-color:rgba(126, 126, 126, 0); border: none;'>
+    <form style = 'width:100%;'>
+      <h3>Create New Task <span class="close" id  = 'close-task-creation'>&times;</span></h3>
+      <div class = 'fields'>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        {{render_field(TaskForm.TaskPriority)}}
+        {{render_field(TaskForm.TaskDescription)}}
+        {{render_field(TaskForm.ExpectedStartDate)}}
+        {{render_field(TaskForm.ExpectedEndDate)}}
+        {{render_field(TaskForm.ActualStartDate)}}
+        {{render_field(TaskForm.ActualEndDate)}}
+        {{render_field(TaskForm.Location)}}
+
+        <div class = 'row'>
+          <div class = 'col-a'>
+            <label>Assigned To:</label>
+            <span style = 'float: right; margin-left: 10px;' class = 'search-managers' id = 'search-managers'><img src = "{{url_for('static', filename = 'images/search.png')}}" style = 'width: 25px; height: 25px;' /></span>
+          </div>
+          <div class = 'col-b'>
+            {{TaskForm.AssignedTo}}
+          </div>
+        </div>
+
+        {{render_field(TaskForm.Deliverables)}}
+
+        <div class = 'row'>
+          <div class = 'col-a'>
+            <label>Depends On: </label>
+          </div>
+          <div class ='col-b'>
+            <select id = 'selector'>
+              <option>Select Task(s)</option>
+            </select>
+            <div class = 'select-what' id = 'task-creation-dependency'>
+              <input type="checkbox" id="one" />First checkbox</br>
+              <input type="checkbox" id="two" />Second checkbox</br>
+              <input type="checkbox" id="three" />Third checkbox</br>
+            </div>
+          </div>
+        </div>
+
+        {{render_field(TaskForm.Status)}}
+        {{render_field(TaskForm.Comments)}}
+      </div>
+      <div class = 'submission'>
+        {{TaskForm.submit(class = 'btn-active')}}
+      </div>
+    </form>
+  </div>
 </div>
 <style>
         * {box-sizing: border-box}
@@ -156,7 +207,17 @@ document.getElementById("defaultOpen").click();
 <script>
     $(document).ready(function(){
         $('#mytabs').tabs();
+        $('#selector').click(function(){
+          $('#task-creation-dependency').slideToggle();
+        });
+        $('#add-task').click(function(){
+          $('#AssignedTo').tagsInput();
+          $('#create-task-modal').show();
+        });
 
+        $('#close-task-creation').click(function(){
+          $('#create-task-modal').hide();
+        });
  
     });
 </script>

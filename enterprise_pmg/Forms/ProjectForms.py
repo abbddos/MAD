@@ -6,7 +6,7 @@ from wtforms.validators import *
 
 
 class MultiCheckboxField(SelectMultipleField):
-    widget = widgets.ListWidget(prefix_label = True)
+    widget = widgets.ListWidget(prefix_label=True)
     option_widget = widgets.CheckboxInput()
 
 class ProjectForm(Form):
@@ -33,7 +33,6 @@ class TaskForm(Form):
     Location = StringField('Location :' )
     AssignedTo = StringField('Assigned to: ')
     Deliverables = StringField('Deliverables: ')
-    DependsOn = MultiCheckboxField('Depends On: ', choices = [('One','One'),('Two','Two'),('Three','Three')])
     Status = SelectField('Status: ', choices = [('Scheduled','Scheduled'),('In Progress','In Progress'),('On Hold','On Hold'),('Canceled','Canceled'),('Complete','Complete')])
     Comments = TextAreaField('Comments: ')
     submit = SubmitField('Submit')
